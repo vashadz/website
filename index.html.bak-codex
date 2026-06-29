@@ -1,0 +1,1455 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vasiliki Hadzikosta — Creative Technologist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@400;600;800;900&family=Spectral:ital,wght@0,400;0,500;1,400;1,500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B0B0C;
+    --fg:#EFEAE2;
+    --accent:#FF2D55;
+    --ash:#8C8880;
+    --line:#232323;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--fg);
+    font-family:'Spectral', serif;
+    overflow-x:hidden;
+    cursor:default;
+  }
+  ::selection{ background:var(--accent); color:var(--bg); }
+
+  #bgParticles{
+    position:fixed; top:0; left:0; width:100vw; height:100vh;
+    z-index:-1; pointer-events:none;
+  }
+
+  .mono{ font-family:'IBM Plex Mono', monospace; font-weight:500; letter-spacing:0.04em; }
+  .display{ font-family:'Big Shoulders Display', sans-serif; text-transform:uppercase; }
+
+  a{ color:inherit; text-decoration:none; }
+
+  /* ---------------- LOADER ---------------- */
+  #loader{
+    position:fixed; inset:0; z-index:999;
+    background:var(--bg);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    transition:opacity 0.9s ease, visibility 0.9s ease;
+  }
+  #loader.hide{ opacity:0; visibility:hidden; pointer-events:none; }
+  #cloudCanvas{ width:280px; height:280px; }
+  #loaderLabel{
+    margin-top:18px; font-size:11px; color:var(--ash);
+    letter-spacing:0.25em; text-transform:uppercase;
+  }
+  #loaderPct{ color:var(--accent); }
+
+  /* ---------------- NAV ---------------- */
+  nav{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    display:flex; justify-content:space-between; align-items:center;
+    padding:22px 5vw;
+    font-size:11px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    mix-blend-mode:difference;
+  }
+  nav .links{ display:flex; gap:28px; }
+  nav .links a{ position:relative; padding-bottom:2px; }
+  nav .links a::after{
+    content:''; position:absolute; left:0; bottom:0; width:0; height:1px;
+    background:var(--fg); transition:width 0.3s ease;
+  }
+  nav .links a:hover::after{ width:100%; }
+  nav .brand{ font-family:'Big Shoulders Display', sans-serif; font-weight:700; }
+
+  /* ---------------- HERO ---------------- */
+  .hero{
+    min-height:100vh;
+    display:flex; flex-direction:column; justify-content:center;
+    padding:0 5vw;
+    position:relative;
+  }
+  .eyebrow{
+    font-size:11px; color:var(--ash); letter-spacing:0.3em; text-transform:uppercase;
+    margin-bottom:18px;
+    opacity:0; transform:translateY(8px);
+    animation:riseIn 0.8s ease forwards;
+    animation-delay:0.2s;
+  }
+  h1.name{
+    font-size:clamp(48px, 11vw, 168px);
+    line-height:0.92;
+    font-weight:900;
+    letter-spacing:-0.01em;
+    opacity:0; transform:translateY(14px);
+    animation:riseIn 0.9s ease forwards;
+    animation-delay:0.35s;
+  }
+  h1.name span{ display:block; }
+  h1.name .accent{ color:var(--accent); }
+  .role{
+    margin-top:24px; max-width:560px;
+    font-family:'Spectral', serif; font-style:italic;
+    font-size:clamp(16px, 2.1vw, 22px);
+    color:var(--fg); opacity:0.88;
+    line-height:1.5;
+    opacity:0; transform:translateY(10px);
+    animation:riseIn 0.9s ease forwards;
+    animation-delay:0.5s;
+  }
+  @keyframes riseIn{ to{ opacity:1; transform:translateY(0); } }
+
+  .scrollcue{
+    position:absolute; bottom:34px; left:5vw;
+    font-size:10px; letter-spacing:0.25em; color:var(--ash);
+    display:flex; align-items:center; gap:10px;
+  }
+  .scrollcue .bar{ width:1px; height:34px; background:var(--ash); position:relative; overflow:hidden; }
+  .scrollcue .bar::after{
+    content:''; position:absolute; top:0; left:0; width:100%; height:30%;
+    background:var(--accent); animation:scrollbar 1.6s ease-in-out infinite;
+  }
+  @keyframes scrollbar{ 0%{top:-30%;} 100%{top:100%;} }
+
+  /* ---------------- CLOCK STRIP ---------------- */
+  .clockstrip{
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    padding:14px 5vw;
+    display:flex; gap:48px; flex-wrap:wrap;
+    font-size:11px; letter-spacing:0.1em;
+  }
+  .clockstrip .item{ display:flex; gap:8px; color:var(--ash); }
+  .clockstrip .item b{ color:var(--fg); font-weight:500; }
+  .clockstrip .item .t{ color:var(--accent); }
+
+  /* ---------------- SECTION SCAFFOLD ---------------- */
+  section{ padding:140px 5vw; position:relative; }
+  .section-head{
+    display:flex; justify-content:space-between; align-items:baseline;
+    margin-bottom:64px; gap:24px; flex-wrap:wrap;
+    border-bottom:1px solid var(--line); padding-bottom:18px;
+  }
+  .section-head .num{ font-size:11px; color:var(--accent); letter-spacing:0.2em; }
+  .section-head h2{
+    font-family:'Big Shoulders Display', sans-serif; text-transform:uppercase;
+    font-weight:700; font-size:clamp(22px, 3vw, 34px);
+  }
+  .section-head .count{ font-size:11px; color:var(--ash); letter-spacing:0.15em; }
+
+  /* ---------------- WORK: FILTERS + PROJECT GRID ---------------- */
+  .filter-row{
+    display:flex; gap:10px; flex-wrap:wrap; margin-bottom:44px;
+  }
+  .filter-pill{
+    background:none; border:1px solid var(--line); color:var(--ash);
+    font-size:11px; letter-spacing:0.08em; text-transform:uppercase;
+    padding:8px 16px; cursor:pointer;
+    transition:border-color 0.25s ease, color 0.25s ease;
+  }
+  .filter-pill:hover{ color:var(--fg); border-color:var(--ash); }
+  .filter-pill.active{ border-color:var(--accent); color:var(--accent); }
+
+  .project-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
+    gap:28px;
+  }
+  .project-card{
+    cursor:pointer; border:1px solid var(--line); background:#101011;
+    transition:transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  .project-card:hover{
+    transform:translateY(-5px); border-color:var(--accent);
+    box-shadow:0 18px 32px rgba(0,0,0,0.4);
+  }
+  .card-thumb{
+    position:relative; aspect-ratio:4/3; overflow:hidden; background:#0C0C0D;
+  }
+  .card-thumb img{
+    width:100%; height:100%; object-fit:cover; display:block;
+    transition:transform 0.45s ease;
+  }
+  .project-card:hover .card-thumb img{ transform:scale(1.06); }
+  .placeholder-thumb{
+    display:flex; align-items:center; justify-content:center;
+    background:repeating-linear-gradient(135deg, #141415 0 14px, #18181a 14px 28px);
+  }
+  .thumb-icon{ font-size:30px; color:var(--ash); opacity:0.55; }
+  .card-meta{ padding:18px 18px 22px; }
+  .card-idx{ display:block; color:var(--accent); margin-bottom:8px; font-size:11px; }
+  .card-title{
+    font-family:'Big Shoulders Display', sans-serif; text-transform:uppercase;
+    font-weight:700; font-size:17px; line-height:1.25; margin-bottom:10px;
+  }
+  .card-tag{ font-size:11px; color:var(--ash); letter-spacing:0.06em; }
+
+  /* ---------------- PROJECT MODAL ---------------- */
+  .modal-overlay{
+    position:fixed; inset:0; z-index:200;
+    background:rgba(5,5,6,0.86);
+    backdrop-filter:blur(6px);
+    display:flex; align-items:flex-start; justify-content:center;
+    padding:70px 5vw 40px;
+    opacity:0; visibility:hidden;
+    transition:opacity 0.3s ease, visibility 0.3s ease;
+    overflow-y:auto;
+  }
+  .modal-overlay.open{ opacity:1; visibility:visible; }
+  .modal-panel{
+    position:relative; max-width:920px; width:100%;
+    background:var(--bg); border:1px solid var(--line);
+    padding:52px clamp(20px,4vw,56px) 64px;
+    margin-bottom:60px;
+  }
+  .modal-close{
+    position:absolute; top:16px; right:16px; width:38px; height:38px;
+    border:1px solid var(--line); background:none; color:var(--fg);
+    font-size:20px; line-height:1; cursor:pointer;
+    transition:border-color 0.25s ease, color 0.25s ease;
+  }
+  .modal-close:hover{ border-color:var(--accent); color:var(--accent); }
+  .modal-head{ margin-bottom:26px; }
+  .modal-cat{
+    color:var(--accent); font-size:11px; letter-spacing:0.15em; text-transform:uppercase;
+  }
+  .modal-head h2{
+    font-family:'Big Shoulders Display', sans-serif; text-transform:uppercase;
+    font-weight:800; font-size:clamp(26px, 4vw, 42px); margin:10px 0; line-height:1.05;
+  }
+  .modal-tag{ color:var(--ash); font-size:11px; letter-spacing:0.1em; }
+  .modal-pending{
+    color:var(--ash); margin-top:22px; font-size:11px; letter-spacing:0.04em;
+  }
+  body.modal-open{ overflow:hidden; }
+
+  .scan-frame{
+    position:relative;
+    border:1px solid var(--line);
+    padding:18px;
+    background:#0E0E0F;
+  }
+  .scan-frame .corner{
+    position:absolute; width:16px; height:16px;
+    border:2px solid var(--accent);
+  }
+  .scan-frame .corner.tl{ top:-1px; left:-1px; border-right:none; border-bottom:none; }
+  .scan-frame .corner.tr{ top:-1px; right:-1px; border-left:none; border-bottom:none; }
+  .scan-frame .corner.bl{ bottom:-1px; left:-1px; border-right:none; border-top:none; }
+  .scan-frame .corner.br{ bottom:-1px; right:-1px; border-left:none; border-top:none; }
+  .scan-label{
+    font-size:10px; letter-spacing:0.2em; color:var(--accent);
+    margin-bottom:12px;
+  }
+  .video-embed{ position:relative; width:100%; padding:56.25% 0 0 0; background:#000; }
+  .video-embed iframe{ position:absolute; top:0; left:0; width:100%; height:100%; border:0; }
+  .work-desc{
+    max-width:720px; margin-top:22px;
+    font-size:15px; line-height:1.7; color:var(--fg); opacity:0.85;
+  }
+
+  /* ---------------- CASE STUDY (Wingmate) ---------------- */
+  .case-study{ padding-top:4px; }
+  .case-hero{
+    display:flex; align-items:center; gap:22px; flex-wrap:wrap;
+    margin-bottom:6px;
+  }
+  .case-logo{ height:56px; width:auto; }
+  .case-tagline{
+    font-family:'Spectral', serif; font-style:italic; font-size:18px;
+    color:var(--ash);
+  }
+  .case-stage{ margin-top:44px; }
+  .case-stage-label{
+    font-size:11px; letter-spacing:0.15em; color:var(--accent);
+    text-transform:uppercase; border-bottom:1px solid var(--line);
+    padding-bottom:10px; margin-bottom:18px;
+  }
+  .phone-row{
+    display:flex; gap:18px; overflow-x:auto; padding-bottom:10px;
+    scrollbar-width:thin; scrollbar-color:var(--line) transparent;
+  }
+  .phone-row::-webkit-scrollbar{ height:5px; }
+  .phone-row::-webkit-scrollbar-thumb{ background:var(--line); }
+  .phone-frame{
+    flex:none; width:150px;
+    border:5px solid #1A1A1B; border-radius:22px;
+    overflow:hidden; background:#000; margin:0;
+    box-shadow:0 14px 28px rgba(0,0,0,0.45);
+  }
+  .phone-frame img{ width:100%; display:block; }
+  .desktop-frame{
+    margin-top:16px;
+    border:1px solid var(--line); border-radius:6px; overflow:hidden;
+    box-shadow:0 14px 28px rgba(0,0,0,0.4);
+  }
+  .desktop-frame img{ width:100%; display:block; }
+
+  /* ---------------- ABOUT ---------------- */
+  .about-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:60px;
+  }
+  .about-grid .lede{
+    font-size:clamp(20px, 2.6vw, 30px);
+    line-height:1.4;
+  }
+  .about-grid .lede em{ color:var(--accent); font-style:italic; }
+  .about-grid .lede{
+    position:relative;
+    overflow:visible;
+  }
+  .lede-blob{
+    position:absolute;
+    top:-70px; left:-90px;
+    width:480px; height:480px;
+    z-index:0;
+    pointer-events:none;
+    opacity:0.55;
+  }
+  .lede-text{ position:relative; z-index:1; }
+  .about-meta{ font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--ash); line-height:2; }
+  .about-meta .row{ display:flex; justify-content:space-between; border-bottom:1px solid var(--line); padding:10px 0; gap:16px; }
+  .about-meta .row b{ color:var(--fg); font-weight:500; text-align:right; }
+  .stack-more{ color:var(--accent); }
+  .stack-more:hover{ text-decoration:underline; }
+
+  /* ---------------- LAB / PLAYGROUND ---------------- */
+  .lab-grid{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr));
+    gap:1px; background:var(--line);
+  }
+  .lab-card{
+    background:var(--bg); padding:34px 26px; min-height:180px;
+    display:flex; flex-direction:column; justify-content:space-between;
+    transition:background 0.3s ease;
+  }
+  .lab-card:hover{ background:#121214; }
+  .lab-card .lab-title{ font-family:'Big Shoulders Display',sans-serif; text-transform:uppercase; font-weight:700; font-size:15px; }
+  .lab-card .lab-desc{ font-size:12px; color:var(--ash); font-family:'IBM Plex Mono',monospace; margin-top:14px; line-height:1.6; }
+  .lab-card .lab-go{
+    display:block; margin-top:10px; color:var(--accent); opacity:0;
+    transform:translateY(-4px); transition:opacity 0.25s ease, transform 0.25s ease;
+  }
+  .lab-card:hover .lab-go{ opacity:1; transform:translateY(0); }
+
+  /* ---------------- THE WALL (posters / for fun) ---------------- */
+  .wall-controls{
+    display:flex; align-items:center; gap:20px;
+    font-size:11px; color:var(--ash); letter-spacing:0.1em;
+  }
+  .wall-hint{ display:none; }
+  @media (min-width:720px){ .wall-hint{ display:inline; } }
+  .shuffle-btn{
+    background:none; border:1px solid var(--line); color:var(--fg);
+    font-size:11px; letter-spacing:0.1em; text-transform:uppercase;
+    padding:7px 14px; cursor:pointer;
+    transition:border-color 0.25s ease, color 0.25s ease, transform 0.25s ease;
+  }
+  .shuffle-btn:hover{ border-color:var(--accent); color:var(--accent); }
+  .shuffle-btn:active{ transform:scale(0.94); }
+  .shuffle-btn.spin svg, .shuffle-btn.spin{ animation:none; }
+
+  .wall-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(190px, 1fr));
+    gap:34px 28px;
+  }
+  .pin{
+    position:relative;
+    background:#161617;
+    border:1px solid var(--line);
+    padding:14px 14px 18px;
+    transform:rotate(var(--r, 0deg));
+    transition:transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, opacity 0.3s ease;
+    box-shadow:0 10px 24px rgba(0,0,0,0.35);
+    cursor:grab;
+  }
+  .pin:hover{
+    transform:rotate(0deg) scale(1.04) translateY(-4px);
+    box-shadow:0 18px 34px rgba(0,0,0,0.5);
+    border-color:var(--accent);
+    z-index:5;
+  }
+  .pin::before{
+    content:'';
+    position:absolute; top:-7px; left:50%; transform:translateX(-50%) rotate(-3deg);
+    width:26px; height:14px;
+    background:var(--accent);
+    opacity:0.9;
+    clip-path:polygon(0 0, 100% 0, 92% 100%, 8% 100%);
+  }
+  .pin .pin-img{
+    width:100%; aspect-ratio:4/5; object-fit:cover; object-position:center; display:block;
+    background:#0E0E0F;
+    filter:saturate(0.96);
+    pointer-events:none;
+  }
+  .pin.tall .pin-img{ object-position:top; }
+  .pin-expand{
+    position:absolute; top:18px; right:18px;
+    background:rgba(0,0,0,0.65); color:var(--fg);
+    font-size:10px; letter-spacing:0.08em; text-transform:uppercase;
+    padding:4px 8px; opacity:0; transition:opacity 0.25s ease;
+    pointer-events:none;
+  }
+  .pin:hover .pin-expand{ opacity:1; }
+  .pin.is-video .pin-img{ filter:saturate(0.85) brightness(0.8); }
+  .pin-play{
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:42px; height:42px; border-radius:50%;
+    background:rgba(0,0,0,0.55); border:1px solid var(--accent);
+    color:var(--accent); display:flex; align-items:center; justify-content:center;
+    font-size:13px; pointer-events:none;
+  }
+  .pin .pin-cap{
+    margin-top:10px; font-size:11px; color:var(--ash);
+    letter-spacing:0.06em; line-height:1.4;
+  }
+  .pin .pin-cap b{ color:var(--fg); font-weight:500; }
+
+  .pin.empty{
+    aspect-ratio:4/5; height:auto;
+    display:flex; align-items:center; justify-content:center;
+    border:1px dashed var(--line);
+    background:transparent;
+    box-shadow:none;
+  }
+  .pin.empty:hover{ transform:rotate(0deg); border-color:var(--ash); box-shadow:none; }
+  .pin.empty .pin-plus{
+    font-size:11px; color:var(--ash); letter-spacing:0.12em; text-align:center;
+    font-family:'IBM Plex Mono',monospace; text-transform:uppercase; padding:0 16px;
+    pointer-events:none;
+  }
+
+  /* drag + shuffle states */
+  .pin.dragging{ opacity:0.25; cursor:grabbing; }
+  .pin.drag-over{ border-color:var(--accent); }
+  .pin.shuffle-out{ opacity:0; transform:scale(0.82) rotate(var(--r,0deg)); }
+  .pin.shuffle-in{ opacity:0; transform:scale(0.82) rotate(var(--r,0deg)); }
+
+  /* wall lightbox (reuses modal-overlay) */
+  .lightbox-panel{
+    max-width:680px; padding:24px; background:#0c0c0d;
+  }
+  .lightbox-content{ max-height:82vh; overflow-y:auto; }
+  .lightbox-content img, .lightbox-content video{
+    width:100%; display:block; border:1px solid var(--line);
+  }
+  .lightbox-cap{
+    margin-top:14px; font-size:11px; color:var(--ash); letter-spacing:0.06em;
+  }
+
+  /* ---------------- STACK ---------------- */
+  .section-head .count .dot{
+    display:inline-block; width:6px; height:6px; border-radius:50%;
+    background:var(--line); margin-right:4px; vertical-align:middle;
+  }
+  .section-head .count .dot.core{ background:var(--accent); }
+
+  .stack-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));
+    gap:48px;
+  }
+  .stack-cat{
+    font-family:'Big Shoulders Display', sans-serif; text-transform:uppercase;
+    font-weight:700; font-size:13px; letter-spacing:0.12em; color:var(--ash);
+    border-bottom:1px solid var(--line); padding-bottom:10px; margin-bottom:16px;
+  }
+  .stack-col ul{ list-style:none; }
+  .stack-col li{
+    font-family:'IBM Plex Mono', monospace; font-size:13px; color:var(--fg);
+    display:flex; align-items:center; gap:10px; padding:7px 0;
+  }
+  .stack-col li.core{ color:var(--fg); font-weight:500; }
+  .stack-col li .dot{
+    width:6px; height:6px; border-radius:50%; flex:none; background:var(--line);
+  }
+  .stack-col li .dot.core{ background:var(--accent); }
+
+  /* ---------------- FOOTER ---------------- */
+  footer{
+    padding:120px 5vw 60px;
+    border-top:1px solid var(--line);
+  }
+  .footer-cta{
+    font-family:'Big Shoulders Display', sans-serif; text-transform:uppercase;
+    font-weight:900; font-size:clamp(34px, 8vw, 96px);
+    line-height:0.95;
+  }
+  .footer-cta a{ color:var(--accent); }
+  .footer-bottom{
+    display:flex; justify-content:space-between; align-items:flex-end;
+    margin-top:80px; flex-wrap:wrap; gap:24px;
+    font-size:11px; color:var(--ash); letter-spacing:0.1em;
+  }
+  .footer-bottom .socials{ display:flex; gap:22px; }
+  .footer-bottom .socials a{ position:relative; }
+  .footer-bottom .socials a::after{
+    content:''; position:absolute; left:0; bottom:-4px; width:0; height:1px; background:var(--accent);
+    transition:width 0.3s ease;
+  }
+  .footer-bottom .socials a:hover::after{ width:100%; }
+  .footer-bottom .socials a:hover{ color:var(--fg); }
+
+  @media (max-width:720px){
+    .about-grid{ grid-template-columns:1fr; }
+    .work-row{ grid-template-columns:34px 1fr; row-gap:8px; }
+    .work-row .tag, .work-row .arrow{ grid-column:2; }
+    nav{ font-size:10px; padding:16px 5vw; }
+    nav .links{ gap:16px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+  <canvas id="bgParticles"></canvas>
+
+  <!-- LOADER -->
+  <div id="loader">
+    <canvas id="cloudCanvas" width="280" height="280"></canvas>
+    <div id="loaderLabel">aligning points — <span id="loaderPct">0</span></div>
+  </div>
+
+  <!-- NAV -->
+  <nav>
+    <div class="brand mono">V.H.</div>
+    <div class="links mono">
+      <a href="#work">01 work</a>
+      <a href="#about">02 about</a>
+      <a href="#lab">03 lab</a>
+      <a href="#wall">04 wall</a>
+      <a href="#stack">05 stack</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="eyebrow mono">creative technologist — currently digitizing ruins for unesco</div>
+    <h1 class="name display">
+      <span>Vasiliki</span>
+      <span class="accent">Hadzikosta</span>
+    </h1>
+    <p class="role">Most of what I work on started out as a ruin. By day I help put ancient sites back together inside Unreal, point by scanned point — by night I make smaller, stranger things just because I can.</p>
+    <div class="scrollcue mono"><div class="bar"></div>scroll</div>
+  </div>
+
+  <!-- CLOCK STRIP -->
+  <div class="clockstrip mono" id="clockstrip">
+    <div class="item">PAR <b id="t-par">--:--</b></div>
+    <div class="item">ANGKOR <b id="t-angkor">--:--</b></div>
+    <div class="item">MOSUL <b id="t-mosul">--:--</b></div>
+    <div class="item">LA <b id="t-la">--:--</b></div>
+  </div>
+
+  <!-- WORK -->
+  <section id="work">
+    <div class="section-head">
+      <div class="num mono">01 / SELECTED WORK</div>
+      <h2>Work</h2>
+      <div class="count mono">11 PROJECTS</div>
+    </div>
+
+    <div class="filter-row mono" id="filterRow">
+      <button class="filter-pill active" data-filter="all">All</button>
+      <button class="filter-pill" data-filter="heritage">Heritage &amp; 3D</button>
+      <button class="filter-pill" data-filter="product">Product &amp; UX</button>
+      <button class="filter-pill" data-filter="brand">Brand &amp; Web</button>
+      <button class="filter-pill" data-filter="personal">Personal &amp; Code</button>
+      <button class="filter-pill" data-filter="film">Film &amp; Thesis</button>
+    </div>
+
+    <div class="project-grid" id="projectGrid">
+
+      <article class="project-card" data-category="heritage" data-modal="iconem">
+        <div class="card-thumb placeholder-thumb"><span class="thumb-icon">⛰</span></div>
+        <div class="card-meta">
+          <span class="card-idx mono">01</span>
+          <h3 class="card-title">Iconem — Heritage in 3D</h3>
+          <span class="card-tag mono">photogrammetry / unreal / ue shaders</span>
+        </div>
+      </article>
+
+      <article class="project-card" data-category="brand" data-modal="tournee">
+        <div class="card-thumb placeholder-thumb"><span class="thumb-icon">◐</span></div>
+        <div class="card-meta">
+          <span class="card-idx mono">02</span>
+          <h3 class="card-title">La Tournée des Galeries</h3>
+          <span class="card-tag mono">react / tally / gallery culture</span>
+        </div>
+      </article>
+
+      <article class="project-card" data-category="brand" data-modal="almadoro">
+        <div class="card-thumb placeholder-thumb"><span class="thumb-icon">✦</span></div>
+        <div class="card-meta">
+          <span class="card-idx mono">03</span>
+          <h3 class="card-title">Alma D'Oro — Pistachio LAVA</h3>
+          <span class="card-tag mono">brand system / digital menu boards</span>
+        </div>
+      </article>
+
+      <article class="project-card" data-category="personal" data-modal="isometric">
+        <div class="card-thumb placeholder-thumb"><span class="thumb-icon">◇</span></div>
+        <div class="card-meta">
+          <span class="card-idx mono">04</span>
+          <h3 class="card-title">Isometric Portfolio World</h3>
+          <span class="card-tag mono">pixel art / p5.js / walkable ui</span>
+        </div>
+      </article>
+
+      <article class="project-card" data-category="product" data-modal="wingmate">
+        <div class="card-thumb"><img src="images/wingmate/mode2.png" alt="Wingmate Flight Mode screen" loading="lazy"></div>
+        <div class="card-meta">
+          <span class="card-idx mono">05</span>
+          <h3 class="card-title">Wingmate — Seatmate Matching App</h3>
+          <span class="card-tag mono">ux/ui · ios · end-to-end · first project</span>
+        </div>
+      </article>
+
+      <article class="project-card" data-category="film" data-modal="labyrinth">
+        <div class="card-thumb"><img src="https://vumbnail.com/782162719.jpg" alt="Labyrinth of Broken Dreams thumbnail" loading="lazy"></div>
+        <div class="card-meta">
+          <span class="card-idx mono">06</span>
+          <h3 class="card-title">Labyrinth of Broken Dreams</h3>
+          <span class="card-tag mono">2022 — rhino / 3df zephyr</span>
+        </div>
+      </article>
+
+      <article class="project-card" data-category="film" data-modal="greenray">
+        <div class="card-thumb"><img src="https://vumbnail.com/782178049.jpg" alt="The Green Ray thumbnail" loading="lazy"></div>
+        <div class="card-meta">
+          <span class="card-idx mono">07</span>
+          <h3 class="card-title">The Green Ray</h3>
+          <span class="card-tag mono">vimeo / 782178049</span>
+        </div>
+      </article>
+
+      <article class="project-card" data-category="film" data-modal="tissage">
+        <div class="card-thumb"><img src="https://vumbnail.com/797873024.jpg" alt="Tissage thumbnail" loading="lazy"></div>
+        <div class="card-meta">
+          <span class="card-idx mono">08</span>
+          <h3 class="card-title">Tissage</h3>
+          <span class="card-tag mono">vimeo / 797873024</span>
+        </div>
+      </article>
+
+      <article class="project-card" data-category="film" data-modal="unityfinal">
+        <div class="card-thumb"><img src="https://vumbnail.com/895663424.jpg" alt="Unity Final thumbnail" loading="lazy"></div>
+        <div class="card-meta">
+          <span class="card-idx mono">09</span>
+          <h3 class="card-title">Unity Final</h3>
+          <span class="card-tag mono">vimeo / 895663424</span>
+        </div>
+      </article>
+
+      <article class="project-card" data-category="film" data-modal="finalthesis">
+        <div class="card-thumb"><img src="https://vumbnail.com/945507158.jpg" alt="Final Thesis thumbnail" loading="lazy"></div>
+        <div class="card-meta">
+          <span class="card-idx mono">10</span>
+          <h3 class="card-title">Final Thesis</h3>
+          <span class="card-tag mono">vimeo / 945507158</span>
+        </div>
+      </article>
+
+      <article class="project-card" data-category="film" data-modal="visualjam">
+        <div class="card-thumb"><img src="https://vumbnail.com/1052961100.jpg" alt="Final Visual Jam thumbnail" loading="lazy"></div>
+        <div class="card-meta">
+          <span class="card-idx mono">11</span>
+          <h3 class="card-title">Final Visual Jam</h3>
+          <span class="card-tag mono">vimeo / 1052961100</span>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- PROJECT MODAL -->
+  <div class="modal-overlay" id="projectModal">
+    <div class="modal-panel">
+      <button class="modal-close" id="modalClose" aria-label="Close case study">×</button>
+      <div class="modal-content" id="modalContent"></div>
+    </div>
+  </div>
+
+  <!-- MODAL TEMPLATES (cloned into the modal on click) -->
+  <template id="tmpl-iconem">
+    <div class="modal-head">
+      <span class="modal-cat mono">heritage &amp; 3d</span>
+      <h2>Iconem — Heritage in 3D</h2>
+      <span class="modal-tag mono">photogrammetry / unreal / ue shaders</span>
+    </div>
+    <p class="work-desc">Heritage sites digitized into walkable, photogrammetry-built 3D experiences for UNESCO, governments, and major museums — point clouds turned into navigable worlds people can actually move through.</p>
+    <p class="modal-pending mono">full case study coming soon — send screenshots and this gets built out properly</p>
+  </template>
+
+  <template id="tmpl-tournee">
+    <div class="modal-head">
+      <span class="modal-cat mono">brand &amp; web</span>
+      <h2>La Tournée des Galeries</h2>
+      <span class="modal-tag mono">react / tally / gallery culture</span>
+    </div>
+    <p class="work-desc">A Paris gallery-vernissage Instagram brand (@latourneeparis), built out into a full three-tab tool — post generator, public submission form, and admin panel — with a four-flute "pinard estimé" wine-rating system at its core, integrated with Tally.so.</p>
+    <p class="modal-pending mono">full case study coming soon — send screenshots and this gets built out properly</p>
+  </template>
+
+  <template id="tmpl-almadoro">
+    <div class="modal-head">
+      <span class="modal-cat mono">brand &amp; web</span>
+      <h2>Alma D'Oro — Pistachio LAVA</h2>
+      <span class="modal-tag mono">brand system / digital menu boards</span>
+    </div>
+    <p class="work-desc">A full visual identity for a NYC gelato business — pistachio-green palette, Cormorant Garamond paired with DM Sans, and a 1920×1080 digital menu board system with a rotating hero panel, including the Pistachio LAVA landing page.</p>
+    <p class="modal-pending mono">full case study coming soon — send screenshots and this gets built out properly</p>
+  </template>
+
+  <template id="tmpl-isometric">
+    <div class="modal-head">
+      <span class="modal-cat mono">personal &amp; code</span>
+      <h2>Isometric Portfolio World</h2>
+      <span class="modal-tag mono">pixel art / p5.js / walkable ui</span>
+    </div>
+    <p class="work-desc">A second life for this very portfolio — an isometric, walkable world where a pixel-art avatar wanders between pavilions for The Lab, Iconem work, case studies, and about. Still mid-build, real assets going in.</p>
+    <p class="modal-pending mono">full case study coming soon — send screenshots and this gets built out properly</p>
+  </template>
+
+  <template id="tmpl-wingmate">
+    <div class="modal-head">
+      <span class="modal-cat mono">product &amp; ux</span>
+      <h2>Wingmate — Seatmate Matching App</h2>
+      <span class="modal-tag mono">ux/ui · ios · end-to-end · first project</span>
+    </div>
+    <div class="case-study">
+      <div class="case-hero">
+        <img class="case-logo" src="images/wingmate/logo.png" alt="Wingmate logo">
+        <p class="case-tagline">Your perfect seatmate, sorted.</p>
+      </div>
+      <p class="work-desc">Wingmate matches airline passengers with a compatible seatmate on the same flight. Instead of leaving who you sit next to entirely up to chance, people set a "Flight Mode" — Quiet, Social, Explorer, Business, or Romantic — answer a short personality and preference quiz, and get matched with someone on their flight who's looking for the same kind of company. Matches can chat before takeoff, and the whole loop is held together by push notifications and a trip dashboard. Built end-to-end: onboarding, sign-in, the quiz, mode selection (mobile and a desktop companion view), matching, in-app chat, and notifications.</p>
+
+      <div class="case-stage">
+        <div class="case-stage-label mono">01 · onboarding &amp; sign-in</div>
+        <div class="phone-row">
+          <figure class="phone-frame"><img src="images/wingmate/Landpage.png" alt="Onboarding screen: You're not like everyone else." loading="lazy"></figure>
+          <figure class="phone-frame"><img src="images/wingmate/Landpage_2.png" alt="Onboarding screen: Where you sit matters." loading="lazy"></figure>
+          <figure class="phone-frame"><img src="images/wingmate/Sign_In.png" alt="Sign in screen with Apple, Google, and phone number options" loading="lazy"></figure>
+          <figure class="phone-frame"><img src="images/wingmate/Signing_In.png" alt="Sign in loading state" loading="lazy"></figure>
+        </div>
+      </div>
+
+      <div class="case-stage">
+        <div class="case-stage-label mono">02 · the quiz</div>
+        <div class="phone-row">
+          <figure class="phone-frame"><img src="images/wingmate/social_setting.png" alt="Quiz question: social setting preference" loading="lazy"></figure>
+          <figure class="phone-frame"><img src="images/wingmate/in_fligth_vibe.png" alt="Quiz question: how you spend time on a plane" loading="lazy"></figure>
+          <figure class="phone-frame"><img src="images/wingmate/interests.png" alt="Quiz screen: pick your interests" loading="lazy"></figure>
+          <figure class="phone-frame"><img src="images/wingmate/pick-1.png" alt="Quiz question: pick the option that feels most like you" loading="lazy"></figure>
+          <figure class="phone-frame"><img src="images/wingmate/hopes-1.png" alt="Quiz question: what are you hoping for on this flight" loading="lazy"></figure>
+        </div>
+      </div>
+
+      <div class="case-stage">
+        <div class="case-stage-label mono">03 · flight mode</div>
+        <div class="phone-row">
+          <figure class="phone-frame"><img src="images/wingmate/mode2.png" alt="Flight Mode selection screen, mobile" loading="lazy"></figure>
+        </div>
+        <figure class="desktop-frame"><img src="images/wingmate/Wingmate_web_workflow-1.png" alt="Desktop companion view: seat map and Flight Mode selection" loading="lazy"></figure>
+      </div>
+
+      <div class="case-stage">
+        <div class="case-stage-label mono">04 · matches &amp; conversation</div>
+        <div class="phone-row">
+          <figure class="phone-frame"><img src="images/wingmate/MATCHES.png" alt="Your Matches screen" loading="lazy"></figure>
+          <figure class="phone-frame"><img src="images/wingmate/in_conv.png" alt="In-app conversation with a match" loading="lazy"></figure>
+        </div>
+      </div>
+
+      <div class="case-stage">
+        <div class="case-stage-label mono">05 · notifications &amp; dashboard</div>
+        <div class="phone-row">
+          <figure class="phone-frame"><img src="images/wingmate/iOS_15_Push_Notifications_2.png" alt="Push notification: new flight added" loading="lazy"></figure>
+          <figure class="phone-frame"><img src="images/wingmate/iOS_15_Push_Notifications_3.png" alt="Push notification: match found" loading="lazy"></figure>
+          <figure class="phone-frame"><img src="images/wingmate/iOS_15_Push_Notifications.png" alt="Push notification: opted into a flight" loading="lazy"></figure>
+          <figure class="phone-frame"><img src="images/wingmate/Landpage_Onboarding.png" alt="Home dashboard, empty state" loading="lazy"></figure>
+          <figure class="phone-frame"><img src="images/wingmate/ejfje.png" alt="Home dashboard with trips and match status" loading="lazy"></figure>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <template id="tmpl-labyrinth">
+    <div class="modal-head">
+      <span class="modal-cat mono">film &amp; thesis</span>
+      <h2>Labyrinth of Broken Dreams</h2>
+      <span class="modal-tag mono">2022 — rhino / 3df zephyr</span>
+    </div>
+    <div class="scan-frame">
+      <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+      <div class="scan-label mono">SCAN_01 · 3D SCANNING.MP4</div>
+      <div class="video-embed">
+        <iframe src="https://player.vimeo.com/video/782162719?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" title="3d scanning.mp4" loading="lazy"></iframe>
+      </div>
+    </div>
+    <p class="work-desc">In New York, many people struggle to find a place to call home — feeling as though they've become lost in an endless maze. Every time the ideal place seems found, something goes wrong. This project sits inside that feeling: never quite closer to the door out, but resolved to keep looking.</p>
+  </template>
+
+  <template id="tmpl-greenray">
+    <div class="modal-head">
+      <span class="modal-cat mono">film &amp; thesis</span>
+      <h2>The Green Ray</h2>
+      <span class="modal-tag mono">vimeo / 782178049</span>
+    </div>
+    <div class="scan-frame">
+      <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+      <div class="scan-label mono">SCAN_02 · THE GREEN RAY</div>
+      <div class="video-embed">
+        <iframe src="https://player.vimeo.com/video/782178049?title=0&amp;byline=0&amp;portrait=0&amp;badge=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" title="The Green Ray" loading="lazy"></iframe>
+      </div>
+    </div>
+    <p class="work-desc">What is a human connection — how hard or easy is it to make, and how much does it affect us? This project was a place to explore that question, and to find connection with others, let alone with myself.</p>
+  </template>
+
+  <template id="tmpl-tissage">
+    <div class="modal-head">
+      <span class="modal-cat mono">film &amp; thesis</span>
+      <h2>Tissage</h2>
+      <span class="modal-tag mono">vimeo / 797873024</span>
+    </div>
+    <div class="scan-frame">
+      <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+      <div class="scan-label mono">SCAN_03 · TISSAGE</div>
+      <div class="video-embed">
+        <iframe src="https://player.vimeo.com/video/797873024?title=0&amp;byline=0&amp;portrait=0&amp;badge=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" title="Tissage" loading="lazy"></iframe>
+      </div>
+    </div>
+  </template>
+
+  <template id="tmpl-unityfinal">
+    <div class="modal-head">
+      <span class="modal-cat mono">film &amp; thesis</span>
+      <h2>Unity Final</h2>
+      <span class="modal-tag mono">vimeo / 895663424</span>
+    </div>
+    <div class="scan-frame">
+      <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+      <div class="scan-label mono">SCAN_04 · UNITY FINAL</div>
+      <div class="video-embed">
+        <iframe src="https://player.vimeo.com/video/895663424?title=0&amp;byline=0&amp;portrait=0&amp;badge=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" title="Unity Final" loading="lazy"></iframe>
+      </div>
+    </div>
+  </template>
+
+  <template id="tmpl-finalthesis">
+    <div class="modal-head">
+      <span class="modal-cat mono">film &amp; thesis</span>
+      <h2>Final Thesis</h2>
+      <span class="modal-tag mono">vimeo / 945507158</span>
+    </div>
+    <div class="scan-frame">
+      <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+      <div class="scan-label mono">SCAN_05 · FINAL THESIS</div>
+      <div class="video-embed">
+        <iframe src="https://player.vimeo.com/video/945507158?title=0&amp;byline=0&amp;portrait=0&amp;badge=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" title="Final Thesis" loading="lazy"></iframe>
+      </div>
+    </div>
+    <p class="work-desc">An exploration of feelings presented as a short film — a specific aesthetic applied to computer-generated clips to talk about the hard-to-describe fragility of human connection. The intention is to challenge the audience through non-linear, experimental narratives that blur reality and perception. Each of us sees the world slightly differently; this film celebrates that divergence, and asks what it is that forms our identity.</p>
+  </template>
+
+  <template id="tmpl-visualjam">
+    <div class="modal-head">
+      <span class="modal-cat mono">film &amp; thesis</span>
+      <h2>Final Visual Jam</h2>
+      <span class="modal-tag mono">vimeo / 1052961100</span>
+    </div>
+    <div class="scan-frame">
+      <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+      <div class="scan-label mono">SCAN_06 · FINAL VISUAL JAM</div>
+      <div class="video-embed">
+        <iframe src="https://player.vimeo.com/video/1052961100?title=0&amp;byline=0&amp;portrait=0&amp;badge=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" title="Final Visual Jam" loading="lazy"></iframe>
+      </div>
+    </div>
+    <p class="work-desc">A study of entanglement in the context of a long-distance relationship — focused on the lack of physical closeness, and the toll that takes. The piece uses quantum entanglement as a metaphor to fuel connection across distance: the music is a translation of quantum data into instruments and notes, with noisy qubits introducing random instrumentation that drifts in and out of the beat.</p>
+  </template>
+
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-head">
+      <div class="num mono">02 / ABOUT</div>
+      <h2>About</h2>
+      <div class="count mono">MEng + MFA</div>
+    </div>
+    <div class="about-grid">
+      <div class="lede">
+        <canvas class="lede-blob" id="aboutBlob" width="480" height="480"></canvas>
+        <span class="lede-text">I trained as an architect, then taught myself to think in <em>polygons and particles</em> instead of walls. Now I spend my days at Iconem turning UNESCO heritage sites into navigable point clouds — and my nights building strange little interactive worlds of my own.</span>
+      </div>
+      <div class="about-meta">
+        <div class="row"><span>role</span><b>3D Interactive Exhibition Designer</b></div>
+        <div class="row"><span>studio</span><b>Iconem, Paris</b></div>
+        <div class="row"><span>education</span><b>MFA Parsons / MEng AUTh</b></div>
+        <div class="row"><span>stack</span><b>Unreal · GLSL/HLSL · Photogrammetry · ComfyUI · Figma · <a href="#stack" class="stack-more">+ more ↓</a></b></div>
+        <div class="row"><span>currently reading</span><b>A Little Life</b></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LAB -->
+  <section id="lab">
+    <div class="section-head">
+      <div class="num mono">03 / PLAYGROUND</div>
+      <h2>The Lab</h2>
+      <div class="count mono">LIVE SKETCHES</div>
+    </div>
+    <div class="lab-grid">
+      <a class="lab-card" href="https://editor.p5js.org/vashadz/sketches/VwFBaCxM1" target="_blank" rel="noopener">
+        <div class="lab-title">Slit-Scan</div>
+        <div class="lab-desc">p5.js / time-as-texture experiment <span class="lab-go">→ open sketch</span></div>
+      </a>
+      <a class="lab-card" href="https://editor.p5js.org/vashadz/sketches/D7KGCKhOY" target="_blank" rel="noopener">
+        <div class="lab-title">Shaders Week 02</div>
+        <div class="lab-desc">GLSL fragment study <span class="lab-go">→ open sketch</span></div>
+      </a>
+      <a class="lab-card" href="https://editor.p5js.org/vashadz/sketches/PMc9yub4K" target="_blank" rel="noopener">
+        <div class="lab-title">Mapping Time</div>
+        <div class="lab-desc">generative timeline visualization <span class="lab-go">→ open sketch</span></div>
+      </a>
+      <a class="lab-card" href="https://editor.p5js.org/vashadz/sketches/Msizg5D1m" target="_blank" rel="noopener">
+        <div class="lab-title">Isabella Stewart — A Theft</div>
+        <div class="lab-desc">narrative interactive piece <span class="lab-go">→ open sketch</span></div>
+      </a>
+      <a class="lab-card" href="https://editor.p5js.org/vashadz/sketches/_3WIGV4u5" target="_blank" rel="noopener">
+        <div class="lab-title">Autobiographical Game</div>
+        <div class="lab-desc">p5.js / playable memory <span class="lab-go">→ open sketch</span></div>
+      </a>
+      <div class="lab-card">
+        <div class="lab-title">+ more soon</div>
+        <div class="lab-desc">always scanning something new</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WALL -->
+  <section id="wall">
+    <div class="section-head">
+      <div class="num mono">04 / FOR FUN</div>
+      <h2>The Wall</h2>
+      <div class="wall-controls mono">
+        <span class="wall-hint">drag to rearrange</span>
+        <button id="shuffleBtn" class="shuffle-btn mono">⟲ shuffle</button>
+        <span class="count" id="wallCount">— PIECES</span>
+      </div>
+    </div>
+    <div class="wall-grid" id="wallGrid"></div>
+  </section>
+
+  <!-- WALL LIGHTBOX -->
+  <div class="modal-overlay" id="wallLightbox">
+    <div class="modal-panel lightbox-panel">
+      <button class="modal-close" id="wallLightboxClose" aria-label="Close">×</button>
+      <div class="lightbox-content" id="wallLightboxContent"></div>
+    </div>
+  </div>
+
+  <!-- STACK -->
+  <section id="stack">
+    <div class="section-head">
+      <div class="num mono">05 / TOOLKIT</div>
+      <h2>The Stack</h2>
+      <div class="count mono"><span class="dot core"></span> daily &nbsp; <span class="dot"></span> occasional</div>
+    </div>
+    <div class="stack-grid">
+      <div class="stack-col">
+        <div class="stack-cat mono">capture &amp; reconstruction</div>
+        <ul>
+          <li class="core"><span class="dot core"></span>Photogrammetry pipelines</li>
+          <li class="core"><span class="dot core"></span>Point cloud processing</li>
+        </ul>
+      </div>
+      <div class="stack-col">
+        <div class="stack-cat mono">real-time &amp; 3d</div>
+        <ul>
+          <li class="core"><span class="dot core"></span>Unreal Engine</li>
+          <li><span class="dot"></span>Unity</li>
+          <li><span class="dot"></span>Blender</li>
+          <li><span class="dot"></span>Cinema 4D</li>
+          <li><span class="dot"></span>Houdini</li>
+          <li><span class="dot"></span>TouchDesigner</li>
+        </ul>
+      </div>
+      <div class="stack-col">
+        <div class="stack-cat mono">code &amp; shaders</div>
+        <ul>
+          <li class="core"><span class="dot core"></span>GLSL / HLSL</li>
+          <li><span class="dot"></span>Python</li>
+          <li><span class="dot"></span>JavaScript / React / Node</li>
+          <li><span class="dot"></span>C#</li>
+          <li><span class="dot"></span>Processing / p5.js</li>
+        </ul>
+      </div>
+      <div class="stack-col">
+        <div class="stack-cat mono">design &amp; generative</div>
+        <ul>
+          <li class="core"><span class="dot core"></span>Figma</li>
+          <li class="core"><span class="dot core"></span>ComfyUI</li>
+          <li><span class="dot"></span>Adobe CC</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-cta">let's <a href="mailto:hello@vasilikihadzikosta.com">connect</a></div>
+    <div class="footer-bottom">
+      <div>© 2026 vasiliki hadzikosta. all rights reserved.</div>
+      <div class="socials">
+        <a href="#">linkedin</a>
+        <a href="#">instagram</a>
+        <a href="#">pinterest</a>
+      </div>
+    </div>
+  </footer>
+
+<script>
+  // ---------- AMBIENT BACKGROUND: drifting scan dust ----------
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const bgCanvas = document.getElementById('bgParticles');
+  const bgCtx = bgCanvas.getContext('2d');
+  let bgW, bgH, bgDust = [];
+  let mouseX = 0, mouseY = 0, parX = 0, parY = 0;
+
+  function sizeBg(){
+    bgW = bgCanvas.width = window.innerWidth;
+    bgH = bgCanvas.height = window.innerHeight;
+  }
+  function seedDust(){
+    const count = window.innerWidth < 720 ? 36 : 70;
+    bgDust = Array.from({length: count}, () => ({
+      x: Math.random() * bgW,
+      y: Math.random() * bgH,
+      r: Math.random() * 1.3 + 0.3,
+      vy: Math.random() * 0.18 + 0.04,
+      vx: (Math.random() - 0.5) * 0.06,
+      depth: Math.random() * 0.6 + 0.4,
+      hue: Math.random() > 0.82 ? 'accent' : 'ash',
+      alpha: Math.random() * 0.35 + 0.12
+    }));
+  }
+  sizeBg();
+  seedDust();
+  window.addEventListener('resize', () => { sizeBg(); });
+
+  window.addEventListener('mousemove', (e) => {
+    mouseX = (e.clientX / window.innerWidth - 0.5);
+    mouseY = (e.clientY / window.innerHeight - 0.5);
+  });
+
+  function drawBg(){
+    bgCtx.clearRect(0, 0, bgW, bgH);
+    parX += (mouseX - parX) * 0.04;
+    parY += (mouseY - parY) * 0.04;
+
+    for(const d of bgDust){
+      d.y -= d.vy;
+      d.x += d.vx;
+      if(d.y < -4){ d.y = bgH + 4; d.x = Math.random() * bgW; }
+      if(d.x < -4) d.x = bgW + 4;
+      if(d.x > bgW + 4) d.x = -4;
+
+      const ox = parX * 22 * d.depth;
+      const oy = parY * 14 * d.depth;
+      bgCtx.beginPath();
+      bgCtx.arc(d.x + ox, d.y + oy, d.r, 0, Math.PI * 2);
+      bgCtx.fillStyle = d.hue === 'accent'
+        ? `rgba(255,45,85,${d.alpha})`
+        : `rgba(239,234,226,${d.alpha * 0.5})`;
+      bgCtx.fill();
+    }
+  }
+
+  if(reducedMotion){
+    drawBg(); // single static frame, no loop
+  } else {
+    (function bgLoop(){
+      drawBg();
+      requestAnimationFrame(bgLoop);
+    })();
+  }
+
+  // ---------- LOADER: point-cloud reconstruction of name ----------
+  const canvas = document.getElementById('cloudCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+
+  // build target points by rendering text to an offscreen canvas and sampling pixels
+  const off = document.createElement('canvas');
+  off.width = W; off.height = H;
+  const octx = off.getContext('2d');
+  octx.fillStyle = '#fff';
+  octx.font = '700 64px Big Shoulders Display, sans-serif';
+  octx.textAlign = 'center';
+  octx.textBaseline = 'middle';
+  octx.fillText('VH', W/2, H/2);
+
+  const imgData = octx.getImageData(0,0,W,H).data;
+  const targets = [];
+  const STEP = 4;
+  for(let y=0; y<H; y+=STEP){
+    for(let x=0; x<W; x+=STEP){
+      const alpha = imgData[(y*W+x)*4+3];
+      if(alpha > 128){ targets.push({x, y}); }
+    }
+  }
+
+  const particles = targets.map(t => ({
+    x: Math.random()*W,
+    y: Math.random()*H,
+    tx: t.x,
+    ty: t.y,
+    size: Math.random()*1.6 + 0.6
+  }));
+
+  let progress = 0;
+  const duration = 1600; // ms
+  let startTime = null;
+
+  function drawFrame(p){
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle = '#FF2D55';
+    for(const pt of particles){
+      const cx = pt.x + (pt.tx - pt.x) * p;
+      const cy = pt.y + (pt.ty - pt.y) * p;
+      ctx.beginPath();
+      ctx.arc(cx, cy, pt.size, 0, Math.PI*2);
+      ctx.fill();
+    }
+  }
+
+  function tick(now){
+    if(!startTime) startTime = now;
+    const elapsed = now - startTime;
+    progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1-progress, 3);
+    drawFrame(eased);
+
+    const pctEl = document.getElementById('loaderPct');
+    pctEl.textContent = Math.round(eased * particles.length).toLocaleString();
+
+    if(progress < 1){
+      requestAnimationFrame(tick);
+    } else {
+      document.getElementById('loaderLabel').textContent = particles.length.toLocaleString() + ' points — locked';
+      setTimeout(() => {
+        document.getElementById('loader').classList.add('hide');
+      }, 350);
+    }
+  }
+  requestAnimationFrame(tick);
+
+  // ---------- ABOUT: particle blob behind the lede text ----------
+  (function(){
+    const blobCanvas = document.getElementById('aboutBlob');
+    if(!blobCanvas) return;
+    const bctx = blobCanvas.getContext('2d');
+    const BW = blobCanvas.width, BH = blobCanvas.height;
+    const cx = BW / 2, cy = BH / 2;
+
+    // irregular radius-per-angle, built from a few summed sine waves (cheap organic noise)
+    const lobes = [
+      { amp: 26, freq: 3, phase: Math.random() * Math.PI * 2 },
+      { amp: 16, freq: 5, phase: Math.random() * Math.PI * 2 },
+      { amp: 10, freq: 7, phase: Math.random() * Math.PI * 2 }
+    ];
+    function blobRadius(angle, base){
+      let r = base;
+      for(const l of lobes) r += l.amp * Math.sin(l.freq * angle + l.phase);
+      return r;
+    }
+
+    const baseR = BW * 0.32;
+    const blobPts = [];
+    const N = reducedMotion ? 220 : 320;
+    let tries = 0;
+    while(blobPts.length < N && tries < N * 12){
+      tries++;
+      const a = Math.random() * Math.PI * 2;
+      const maxR = blobRadius(a, baseR);
+      const r = Math.sqrt(Math.random()) * maxR; // bias toward filling, not just edge
+      blobPts.push({
+        x: cx + Math.cos(a) * r,
+        y: cy + Math.sin(a) * r,
+        size: Math.random() * 1.8 + 0.5,
+        accent: Math.random() > 0.78,
+        alpha: Math.random() * 0.5 + 0.25,
+        driftA: Math.random() * Math.PI * 2,
+        driftSpeed: Math.random() * 0.0006 + 0.0002
+      });
+    }
+
+    function drawBlob(t){
+      bctx.clearRect(0, 0, BW, BH);
+      for(const p of blobPts){
+        const jx = Math.cos(p.driftA + t * p.driftSpeed * 1000) * 2;
+        const jy = Math.sin(p.driftA + t * p.driftSpeed * 1000) * 2;
+        bctx.beginPath();
+        bctx.arc(p.x + jx, p.y + jy, p.size, 0, Math.PI * 2);
+        bctx.fillStyle = p.accent
+          ? `rgba(255,45,85,${p.alpha})`
+          : `rgba(239,234,226,${p.alpha * 0.6})`;
+        bctx.fill();
+      }
+    }
+
+    if(reducedMotion){
+      drawBlob(0);
+    } else {
+      (function blobLoop(t){
+        drawBlob(t || 0);
+        requestAnimationFrame(blobLoop);
+      })();
+    }
+  })();
+
+  // ---------- WORLD CLOCK STRIP ----------
+  function formatTime(offsetHours){
+    const now = new Date();
+    const utc = now.getTime() + (now.getTimezoneOffset()*60000);
+    const target = new Date(utc + (3600000*offsetHours));
+    let h = target.getHours().toString().padStart(2,'0');
+    let m = target.getMinutes().toString().padStart(2,'0');
+    return h+':'+m;
+  }
+  function updateClocks(){
+    document.getElementById('t-par').textContent = formatTime(2);    // CEST approx
+    document.getElementById('t-angkor').textContent = formatTime(7); // Cambodia
+    document.getElementById('t-mosul').textContent = formatTime(3);  // Iraq
+    document.getElementById('t-la').textContent = formatTime(-7);    // PDT approx
+  }
+  updateClocks();
+  setInterval(updateClocks, 1000*30);
+
+  // ---------- PROJECT MODAL ----------
+  const projectModal = document.getElementById('projectModal');
+  const modalContent = document.getElementById('modalContent');
+  const modalClose = document.getElementById('modalClose');
+
+  function openModal(id){
+    const tmpl = document.getElementById('tmpl-' + id);
+    if(!tmpl) return;
+    modalContent.innerHTML = '';
+    modalContent.appendChild(tmpl.content.cloneNode(true));
+    projectModal.classList.add('open');
+    document.body.classList.add('modal-open');
+    modalClose.focus();
+  }
+  function closeModal(){
+    projectModal.classList.remove('open');
+    document.body.classList.remove('modal-open');
+    modalContent.innerHTML = ''; // clears embedded video iframes so they stop playing
+  }
+
+  document.querySelectorAll('.project-card').forEach(card => {
+    card.addEventListener('click', () => openModal(card.dataset.modal));
+  });
+  modalClose.addEventListener('click', closeModal);
+  projectModal.addEventListener('click', (e) => { if(e.target === projectModal) closeModal(); });
+  document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeModal(); });
+
+  // ---------- WORK FILTER PILLS ----------
+  const filterRow = document.getElementById('filterRow');
+  const projectGrid = document.getElementById('projectGrid');
+  filterRow.querySelectorAll('.filter-pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterRow.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const f = btn.dataset.filter;
+      projectGrid.querySelectorAll('.project-card').forEach(card => {
+        card.style.display = (f === 'all' || card.dataset.category === f) ? '' : 'none';
+      });
+    });
+  });
+
+  // ---------- THE WALL: posters / fun stuff ----------
+  // To add a piece: drop a new object in this array.
+  //   type     -> "image" or "video"
+  //   src      -> image path, or video path for type "video" (e.g. "images/wall/clip.mp4")
+  //   poster   -> (video only, optional) thumbnail image shown before play
+  //   caption  -> short line, e.g. "Birthday poster — for Mira, 2026"
+  //   tall     -> (image only, optional) set true for long/scrolling pieces — shows a top-cropped
+  //               thumbnail and opens the full image in a lightbox instead of just cropping it
+  // Leave the array entry out (or set src to null) to keep an empty pinned slot instead.
+  const wallPieces = [
+    { type: "image", src: "images/wall/khaite-white-edit.jpg", caption: "Khaite — \u201cThe White Edit\u201d newsletter edit", tall: true },
+    // { src: "images/poster-01.jpg", caption: "Midnight Star — birthday scavenger hunt poster" },
+     { type: "video", src: "images/wall/neutral-lorrai-knit-silk-cardigan.mp4", poster: "images/wall/neutral-lorrai-knit-silk-cardigan.jpg", caption: "Neutral Lorrai Knit Silk Cardigan"},
+  ];
+
+  const MIN_SLOTS = 6; // keeps the wall looking full even with zero pieces yet
+  const wallGrid = document.getElementById('wallGrid');
+  const wallCount = document.getElementById('wallCount');
+  const rotations = [-3, 2, -1.5, 3, -2.5, 1.5, -1, 2.5];
+
+  function randRot(){
+    return (Math.random() * 7 - 3.5).toFixed(1);
+  }
+
+  function makePin(piece, rot){
+    const el = document.createElement('div');
+    el.style.setProperty('--r', rot + 'deg');
+    el.setAttribute('draggable', 'true');
+
+    if(piece && piece.src){
+      el.className = 'pin' + (piece.tall ? ' tall' : '');
+      if(piece.type === 'video'){
+        el.classList.add('is-video');
+        el.innerHTML = `
+          <img class="pin-img" src="${piece.poster || piece.src}" alt="${piece.caption || 'video'}" loading="lazy">
+          <span class="pin-play">▶</span>
+          <div class="pin-cap mono">${piece.caption || ''}</div>
+        `;
+      } else {
+        el.innerHTML = `
+          <img class="pin-img" src="${piece.src}" alt="${piece.caption || 'poster'}" loading="lazy">
+          ${piece.tall ? '<span class="pin-expand mono">view full ↗</span>' : ''}
+          <div class="pin-cap mono">${piece.caption || ''}</div>
+        `;
+      }
+      el.addEventListener('click', (e) => {
+        // don't trigger lightbox mid-drag
+        if(el.classList.contains('dragging')) return;
+        openWallLightbox(piece);
+      });
+    } else {
+      el.className = 'pin empty';
+      el.innerHTML = `<div class="pin-plus">+ send me<br>a poster</div>`;
+    }
+    return el;
+  }
+
+  const total = Math.max(wallPieces.length, MIN_SLOTS);
+  for(let i = 0; i < total; i++){
+    wallGrid.appendChild(makePin(wallPieces[i], rotations[i % rotations.length]));
+  }
+  wallCount.textContent = (wallPieces.length || '0') + ' PIECES';
+
+  // ---- lightbox for full-size view (images + video) ----
+  const wallLightbox = document.getElementById('wallLightbox');
+  const wallLightboxContent = document.getElementById('wallLightboxContent');
+  const wallLightboxClose = document.getElementById('wallLightboxClose');
+
+  function openWallLightbox(piece){
+    wallLightboxContent.innerHTML = '';
+    if(piece.type === 'video'){
+      const v = document.createElement('video');
+      v.src = piece.src;
+      v.controls = true;
+      v.autoplay = true;
+      v.playsInline = true;
+      wallLightboxContent.appendChild(v);
+    } else {
+      const img = document.createElement('img');
+      img.src = piece.src;
+      img.alt = piece.caption || '';
+      wallLightboxContent.appendChild(img);
+    }
+    if(piece.caption){
+      const cap = document.createElement('div');
+      cap.className = 'lightbox-cap mono';
+      cap.textContent = piece.caption;
+      wallLightboxContent.appendChild(cap);
+    }
+    wallLightbox.classList.add('open');
+    document.body.classList.add('modal-open');
+  }
+  function closeWallLightbox(){
+    wallLightbox.classList.remove('open');
+    document.body.classList.remove('modal-open');
+    wallLightboxContent.innerHTML = ''; // stops any playing video
+  }
+  wallLightboxClose.addEventListener('click', closeWallLightbox);
+  wallLightbox.addEventListener('click', (e) => { if(e.target === wallLightbox) closeWallLightbox(); });
+  document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeWallLightbox(); });
+
+  // ---- drag to reorder ----
+  let draggedEl = null;
+
+  wallGrid.addEventListener('dragstart', (e) => {
+    const pin = e.target.closest('.pin');
+    if(!pin) return;
+    draggedEl = pin;
+    pin.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+  });
+
+  wallGrid.addEventListener('dragend', (e) => {
+    const pin = e.target.closest('.pin');
+    if(pin) pin.classList.remove('dragging');
+    wallGrid.querySelectorAll('.pin.drag-over').forEach(p => p.classList.remove('drag-over'));
+    draggedEl = null;
+  });
+
+  wallGrid.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    const target = e.target.closest('.pin');
+    if(!target || target === draggedEl) return;
+    wallGrid.querySelectorAll('.pin.drag-over').forEach(p => p.classList.remove('drag-over'));
+    target.classList.add('drag-over');
+  });
+
+  wallGrid.addEventListener('drop', (e) => {
+    e.preventDefault();
+    const target = e.target.closest('.pin');
+    if(!target || !draggedEl || target === draggedEl) return;
+    target.classList.remove('drag-over');
+
+    const children = Array.from(wallGrid.children);
+    const draggedIdx = children.indexOf(draggedEl);
+    const targetIdx = children.indexOf(target);
+
+    if(draggedIdx < targetIdx){
+      target.after(draggedEl);
+    } else {
+      target.before(draggedEl);
+    }
+  });
+
+  // ---- shuffle button ----
+  const shuffleBtn = document.getElementById('shuffleBtn');
+  shuffleBtn.addEventListener('click', () => {
+    const pins = Array.from(wallGrid.children);
+    pins.forEach(p => p.classList.add('shuffle-out'));
+
+    setTimeout(() => {
+      // Fisher–Yates shuffle, then reassign fresh tilts
+      for(let i = pins.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [pins[i], pins[j]] = [pins[j], pins[i]];
+      }
+      pins.forEach((p, i) => {
+        p.style.setProperty('--r', randRot() + 'deg');
+        wallGrid.appendChild(p);
+        p.classList.remove('shuffle-out');
+        p.classList.add('shuffle-in');
+        p.style.transitionDelay = (i * 35) + 'ms';
+        requestAnimationFrame(() => {
+          p.classList.remove('shuffle-in');
+        });
+      });
+      setTimeout(() => pins.forEach(p => { p.style.transitionDelay = ''; }), 600);
+    }, 280);
+  });
+</script>
+
+</body>
+</html>

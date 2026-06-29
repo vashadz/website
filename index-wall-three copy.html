@@ -1,0 +1,2355 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vasiliki Hadzikosta — Creative Technologist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@400;600;800;900&family=Spectral:ital,wght@0,400;0,500;1,400;1,500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B0B0C;
+    --fg:#EFEAE2;
+    --accent:#FF2D55;
+    --ash:#8C8880;
+    --line:#232323;
+    --panel:#101011;
+    color-scheme:dark;
+  }
+  :root[data-theme="light"]{
+    --bg:#F3EFE7;
+    --fg:#15130F;
+    --accent:#D81B4F;
+    --ash:#7A746A;
+    --line:#DCD5C6;
+    --panel:#FFFFFF;
+    color-scheme:light;
+  }
+  * { transition:background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease; }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--fg);
+    font-family:'Spectral', serif;
+    overflow-x:hidden;
+    cursor:default;
+  }
+  ::selection{ background:var(--accent); color:var(--bg); }
+
+  #bgParticles{
+    position:fixed; top:0; left:0; width:100vw; height:100vh;
+    z-index:-1; pointer-events:none;
+  }
+
+  /* ---------------- CUSTOM CURSOR ---------------- */
+  #cursorRing{
+    position:fixed; top:0; left:0; z-index:9000;
+    width:30px; height:30px; margin:-15px 0 0 -15px;
+    border:1px solid var(--accent); border-radius:50%;
+    pointer-events:none; mix-blend-mode:difference;
+    transition:width 0.22s ease, height 0.22s ease, margin 0.22s ease, background 0.22s ease, opacity 0.3s ease;
+    opacity:0;
+  }
+  #cursorDot{
+    position:fixed; top:0; left:0; z-index:9001;
+    width:4px; height:4px; margin:-2px 0 0 -2px;
+    background:var(--accent); border-radius:50%;
+    pointer-events:none; opacity:0;
+    transition:opacity 0.3s ease;
+  }
+  body.cursor-ready #cursorRing,
+  body.cursor-ready #cursorDot{ opacity:1; }
+  body.cursor-hot #cursorRing{
+    width:58px; height:58px; margin:-29px 0 0 -29px;
+    background:rgba(255,45,85,0.12);
+  }
+  @media (hover:none), (pointer:coarse){
+    #cursorRing, #cursorDot{ display:none; }
+  }
+
+  .mono{ font-family:'IBM Plex Mono', monospace; font-weight:500; letter-spacing:0.04em; }
+  .display{ font-family:'Big Shoulders Display', sans-serif; text-transform:uppercase; }
+
+  a{ color:inherit; text-decoration:none; }
+
+  /* ---------------- LOADER ---------------- */
+  #loader{
+    position:fixed; inset:0; z-index:999;
+    background:var(--bg);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    transition:opacity 0.9s ease, visibility 0.9s ease;
+  }
+  #loader.hide{ opacity:0; visibility:hidden; pointer-events:none; }
+  #cloudCanvas{ width:280px; height:280px; }
+  #loaderLabel{
+    margin-top:18px; font-size:11px; color:var(--ash);
+    letter-spacing:0.25em; text-transform:uppercase;
+  }
+  #loaderPct{ color:var(--accent); }
+
+  /* ---------------- NAV ---------------- */
+  nav{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    display:flex; justify-content:space-between; align-items:center;
+    padding:22px 5vw;
+    font-size:11px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    mix-blend-mode:difference;
+  }
+  nav .links{ display:flex; gap:28px; }
+  nav .links a{ position:relative; padding-bottom:2px; }
+  nav .links a::after{
+    content:''; position:absolute; left:0; bottom:0; width:0; height:1px;
+    background:var(--fg); transition:width 0.3s ease;
+  }
+  nav .links a:hover::after{ width:100%; }
+  nav .brand{ font-family:'Big Shoulders Display', sans-serif; font-weight:700; }
+
+  .theme-toggle{
+    position:relative; width:42px; height:22px;
+    border:1px solid var(--fg); border-radius:11px;
+    background:none; cursor:pointer; padding:0;
+    margin-left:28px; flex:none;
+  }
+  .theme-toggle .knob{
+    position:absolute; top:2px; left:2px; width:16px; height:16px;
+    border-radius:50%; background:var(--fg);
+    transition:transform 0.35s ease, background 0.35s ease;
+  }
+  [data-theme="light"] .theme-toggle .knob{ transform:translateX(18px); }
+  .theme-toggle .ic{
+    position:absolute; top:50%; transform:translateY(-50%);
+    font-size:9px; line-height:1; color:var(--fg); opacity:0.7;
+  }
+  .theme-toggle .ic.sun{ left:5px; }
+  .theme-toggle .ic.moon{ right:5px; }
+
+  /* ---------------- HERO ---------------- */
+  .hero{
+    min-height:100vh;
+    display:flex; flex-direction:column; justify-content:center;
+    padding:0 5vw;
+    position:relative;
+  }
+  .eyebrow{
+    font-size:11px; color:var(--ash); letter-spacing:0.3em; text-transform:uppercase;
+    margin-bottom:18px;
+    opacity:0; transform:translateY(8px);
+    animation:riseIn 0.8s ease forwards;
+    animation-delay:0.2s;
+  }
+  h1.name{
+    font-size:clamp(48px, 11vw, 168px);
+    line-height:0.92;
+    font-weight:900;
+    letter-spacing:-0.01em;
+    opacity:0; transform:translateY(14px);
+    animation:riseIn 0.9s ease forwards;
+    animation-delay:0.35s;
+  }
+  h1.name span{ display:block; }
+  h1.name .accent{ color:var(--accent); }
+  .sc-ch{ display:inline-block; }
+
+  /* ---------------- SCROLL REVEAL ---------------- */
+  .reveal{
+    opacity:0; transform:translateY(26px);
+    transition:opacity 0.7s cubic-bezier(.2,.7,.2,1), transform 0.7s cubic-bezier(.2,.7,.2,1);
+    will-change:opacity, transform;
+  }
+  .reveal.in{ opacity:1; transform:none; }
+  @media (prefers-reduced-motion: reduce){
+    .reveal{ opacity:1; transform:none; transition:none; }
+  }
+  h1.name .ltr{
+    display:inline-block; will-change:transform;
+    transition:transform 0.18s cubic-bezier(.2,.8,.2,1), color 0.18s ease;
+  }
+  h1.name .ltr:hover{ color:var(--accent); transform:translateY(-10px) rotate(-4deg); }
+
+  .hero-status{
+    margin-top:30px; display:inline-flex; align-items:center; gap:10px;
+    font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--ash);
+    border:1px solid var(--line); padding:8px 14px; border-radius:20px;
+    opacity:0; transform:translateY(10px);
+    animation:riseIn 0.9s ease forwards; animation-delay:0.62s;
+    width:fit-content;
+  }
+  .hero-status .dot{
+    width:7px; height:7px; border-radius:50%; background:#28c76f;
+    box-shadow:0 0 0 0 rgba(40,199,111,0.6); animation:pulse 2s infinite;
+  }
+  @keyframes pulse{
+    0%{ box-shadow:0 0 0 0 rgba(40,199,111,0.55); }
+    70%{ box-shadow:0 0 0 7px rgba(40,199,111,0); }
+    100%{ box-shadow:0 0 0 0 rgba(40,199,111,0); }
+  }
+  .role{
+    margin-top:24px; max-width:560px;
+    font-family:'Spectral', serif; font-style:italic;
+    font-size:clamp(16px, 2.1vw, 22px);
+    color:var(--fg); opacity:0.88;
+    line-height:1.5;
+    opacity:0; transform:translateY(10px);
+    animation:riseIn 0.9s ease forwards;
+    animation-delay:0.5s;
+  }
+  @keyframes riseIn{ to{ opacity:1; transform:translateY(0); } }
+
+  .scrollcue{
+    position:absolute; bottom:34px; left:5vw;
+    font-size:10px; letter-spacing:0.25em; color:var(--ash);
+    display:flex; align-items:center; gap:10px;
+  }
+  .scrollcue .bar{ width:1px; height:34px; background:var(--ash); position:relative; overflow:hidden; }
+  .scrollcue .bar::after{
+    content:''; position:absolute; top:0; left:0; width:100%; height:30%;
+    background:var(--accent); animation:scrollbar 1.6s ease-in-out infinite;
+  }
+  @keyframes scrollbar{ 0%{top:-30%;} 100%{top:100%;} }
+
+  /* ---------------- CLOCK STRIP ---------------- */
+  .clockstrip{
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    padding:14px 5vw;
+    display:flex; gap:48px; flex-wrap:wrap;
+    font-size:11px; letter-spacing:0.1em;
+  }
+  .clockstrip .item{ display:flex; gap:8px; color:var(--ash); }
+  .clockstrip .item b{ color:var(--fg); font-weight:500; }
+  .clockstrip .item .t{ color:var(--accent); }
+
+  /* ---------------- SECTION SCAFFOLD ---------------- */
+  section{ padding:140px 5vw; position:relative; }
+  .section-head{
+    display:flex; justify-content:space-between; align-items:baseline;
+    margin-bottom:64px; gap:24px; flex-wrap:wrap;
+    border-bottom:1px solid var(--line); padding-bottom:18px;
+  }
+  .section-head .num{ font-size:11px; color:var(--accent); letter-spacing:0.2em; }
+  .section-head h2{
+    font-family:'Big Shoulders Display', sans-serif; text-transform:uppercase;
+    font-weight:700; font-size:clamp(22px, 3vw, 34px);
+  }
+  .section-head .count{ font-size:11px; color:var(--ash); letter-spacing:0.15em; }
+
+  /* ---------------- WORK: FILTERS + PROJECT GRID ---------------- */
+  .filter-row{
+    display:flex; gap:10px; flex-wrap:wrap; margin-bottom:44px;
+  }
+  .filter-pill{
+    background:none; border:1px solid var(--line); color:var(--ash);
+    font-size:11px; letter-spacing:0.08em; text-transform:uppercase;
+    padding:8px 16px; cursor:pointer;
+    transition:border-color 0.25s ease, color 0.25s ease;
+  }
+  .filter-pill:hover{ color:var(--fg); border-color:var(--ash); }
+  .filter-pill.active{ border-color:var(--accent); color:var(--accent); }
+
+  .project-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
+    gap:28px;
+  }
+  .project-card{
+    cursor:pointer; border:1px solid var(--line); background:var(--panel);
+    transition:transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  .project-card:hover{
+    transform:translateY(-5px); border-color:var(--accent);
+    box-shadow:0 18px 32px rgba(0,0,0,0.4);
+  }
+  .card-thumb{
+    position:relative; aspect-ratio:4/3; overflow:hidden; background:var(--panel);
+  }
+  .card-thumb img{
+    width:100%; height:100%; object-fit:cover; display:block;
+    transition:transform 0.45s ease;
+  }
+  .project-card:hover .card-thumb img{ transform:scale(1.06); }
+  .placeholder-thumb{
+    display:flex; align-items:center; justify-content:center;
+    background:repeating-linear-gradient(135deg, #141415 0 14px, #18181a 14px 28px);
+  }
+  .thumb-icon{ font-size:30px; color:var(--ash); opacity:0.55; }
+  .card-meta{ padding:18px 18px 22px; }
+  .card-idx{ display:block; color:var(--accent); margin-bottom:8px; font-size:11px; }
+  .card-title{
+    font-family:'Big Shoulders Display', sans-serif; text-transform:uppercase;
+    font-weight:700; font-size:17px; line-height:1.25; margin-bottom:10px;
+  }
+  .card-tag{ font-size:11px; color:var(--ash); letter-spacing:0.06em; }
+
+  /* ---------------- PROJECT MODAL ---------------- */
+  .modal-overlay{
+    position:fixed; inset:0; z-index:200;
+    background:rgba(5,5,6,0.86);
+    backdrop-filter:blur(6px);
+    display:flex; align-items:flex-start; justify-content:center;
+    padding:70px 5vw 40px;
+    opacity:0; visibility:hidden;
+    transition:opacity 0.3s ease, visibility 0.3s ease;
+    overflow-y:auto;
+  }
+  .modal-overlay.open{ opacity:1; visibility:visible; }
+  .modal-panel{
+    position:relative; max-width:920px; width:100%;
+    background:var(--bg); border:1px solid var(--line);
+    padding:52px clamp(20px,4vw,56px) 64px;
+    margin-bottom:60px;
+  }
+  .modal-close{
+    position:absolute; top:16px; right:16px; width:38px; height:38px;
+    border:1px solid var(--line); background:none; color:var(--fg);
+    font-size:20px; line-height:1; cursor:pointer;
+    transition:border-color 0.25s ease, color 0.25s ease;
+  }
+  .modal-close:hover{ border-color:var(--accent); color:var(--accent); }
+  .modal-head{ margin-bottom:26px; }
+  .modal-cat{
+    color:var(--accent); font-size:11px; letter-spacing:0.15em; text-transform:uppercase;
+  }
+  .modal-head h2{
+    font-family:'Big Shoulders Display', sans-serif; text-transform:uppercase;
+    font-weight:800; font-size:clamp(26px, 4vw, 42px); margin:10px 0; line-height:1.05;
+  }
+  .modal-tag{ color:var(--ash); font-size:11px; letter-spacing:0.1em; }
+  .modal-pending{
+    color:var(--ash); margin-top:22px; font-size:11px; letter-spacing:0.04em;
+  }
+  body.modal-open{ overflow:hidden; }
+
+  .scan-frame{
+    position:relative;
+    border:1px solid var(--line);
+    padding:18px;
+    background:var(--panel);
+  }
+  .scan-frame .corner{
+    position:absolute; width:16px; height:16px;
+    border:2px solid var(--accent);
+  }
+  .scan-frame .corner.tl{ top:-1px; left:-1px; border-right:none; border-bottom:none; }
+  .scan-frame .corner.tr{ top:-1px; right:-1px; border-left:none; border-bottom:none; }
+  .scan-frame .corner.bl{ bottom:-1px; left:-1px; border-right:none; border-top:none; }
+  .scan-frame .corner.br{ bottom:-1px; right:-1px; border-left:none; border-top:none; }
+  .scan-label{
+    font-size:10px; letter-spacing:0.2em; color:var(--accent);
+    margin-bottom:12px;
+  }
+  .video-embed{ position:relative; width:100%; padding:56.25% 0 0 0; background:#000; }
+  .video-embed iframe{ position:absolute; top:0; left:0; width:100%; height:100%; border:0; }
+  .video-embed video{ position:absolute; top:0; left:0; width:100%; height:100%; border:0; background:#000; object-fit:cover; }
+  .work-desc{
+    max-width:720px; margin-top:22px;
+    font-size:15px; line-height:1.7; color:var(--fg); opacity:0.85;
+  }
+
+  /* ---------------- CASE STUDY (Wingmate) ---------------- */
+  .case-study{ padding-top:4px; }
+  .case-hero{
+    display:flex; align-items:center; gap:22px; flex-wrap:wrap;
+    margin-bottom:6px;
+  }
+  .case-logo{ height:56px; width:auto; }
+  .case-tagline{
+    font-family:'Spectral', serif; font-style:italic; font-size:18px;
+    color:var(--ash);
+  }
+  .case-stage{ margin-top:44px; }
+  .case-stage-label{
+    font-size:11px; letter-spacing:0.15em; color:var(--accent);
+    text-transform:uppercase; border-bottom:1px solid var(--line);
+    padding-bottom:10px; margin-bottom:18px;
+  }
+  .phone-row{
+    display:flex; gap:18px; overflow-x:auto; padding-bottom:10px;
+    scrollbar-width:thin; scrollbar-color:var(--line) transparent;
+  }
+  .phone-row::-webkit-scrollbar{ height:5px; }
+  .phone-row::-webkit-scrollbar-thumb{ background:var(--line); }
+  .phone-frame{
+    flex:none; width:150px;
+    border:5px solid #1A1A1B; border-radius:22px;
+    overflow:hidden; background:#000; margin:0;
+    box-shadow:0 14px 28px rgba(0,0,0,0.45);
+  }
+  .phone-frame img{ width:100%; display:block; }
+  .desktop-frame{
+    margin-top:16px;
+    border:1px solid var(--line); border-radius:6px; overflow:hidden;
+    box-shadow:0 14px 28px rgba(0,0,0,0.4);
+  }
+  .desktop-frame img{ width:100%; display:block; }
+
+  /* ---------------- INSTA CAROUSEL ROW (BILT) ---------------- */
+  .insta-row{
+    display:flex; gap:14px; overflow-x:auto; padding-bottom:10px;
+    scrollbar-width:thin; scrollbar-color:var(--line) transparent;
+  }
+  .insta-row::-webkit-scrollbar{ height:5px; }
+  .insta-row::-webkit-scrollbar-thumb{ background:var(--line); }
+  .insta-frame{
+    flex:none; width:230px; aspect-ratio:1/1;
+    border:1px solid var(--line); overflow:hidden; background:#000;
+    box-shadow:0 14px 28px rgba(0,0,0,0.35);
+  }
+  .insta-frame img, .insta-frame video{ width:100%; height:100%; object-fit:cover; display:block; }
+  .insta-frame.is-poster{ aspect-ratio:3/4; }
+
+  /* ---------------- MEMORIES OUT OF ORDER (native HTML diagram cards) ---------------- */
+  .memory-stack{
+    display:flex; gap:30px; flex-wrap:wrap;
+    padding:22px 4px 30px;
+    align-items:flex-start;
+  }
+  .memory-card{
+    position:relative; width:380px;
+    background:var(--panel); border:1px solid var(--line);
+    transform:rotate(var(--r, 0deg));
+    transition:transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow:0 10px 24px rgba(0,0,0,0.35);
+  }
+  .memory-card:hover{
+    transform:rotate(0deg) scale(1.03) translateY(-4px);
+    border-color:var(--accent);
+    box-shadow:0 18px 34px rgba(0,0,0,0.5);
+    z-index:5;
+  }
+  .memory-cap{
+    display:block; padding:10px 18px 14px;
+    font-size:11px; color:var(--ash);
+    letter-spacing:0.08em; text-transform:uppercase;
+    border-top:1px solid var(--line);
+  }
+  .mem-svg{ width:100%; display:block; }
+
+  .mem-eyebrow{ font-size:10px; color:var(--accent); letter-spacing:0.18em; margin-bottom:14px; }
+  .mem-caption-sm{ font-size:10.5px; color:var(--ash); letter-spacing:0.08em; line-height:1.6; }
+  .mem-brief{
+    margin:26px 0 8px; padding:22px 26px;
+    border-left:2px solid var(--accent); background:var(--panel);
+  }
+  .mem-brief .case-tagline{ max-width:640px; }
+  .mem-disclaimer{
+    font-size:10.5px; color:var(--ash); opacity:0.75;
+    margin:10px 2px 0;
+  }
+
+  /* ---------------- ABOUT ---------------- */
+  .about-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:60px;
+  }
+  .about-grid .lede{
+    font-size:clamp(20px, 2.6vw, 30px);
+    line-height:1.4;
+  }
+  .about-grid .lede em{ color:var(--accent); font-style:italic; }
+  .about-grid .lede{
+    position:relative;
+    overflow:visible;
+  }
+  .lede-blob{
+    position:absolute;
+    top:-70px; left:-90px;
+    width:480px; height:480px;
+    z-index:0;
+    pointer-events:none;
+    opacity:0.55;
+    filter:blur(0.1px);
+  }
+  .lede-text{ position:relative; z-index:1; }
+  .about-meta{ font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--ash); line-height:2; }
+  .about-meta .row{ display:flex; justify-content:space-between; border-bottom:1px solid var(--line); padding:10px 0; gap:16px; }
+  .about-meta .row b{ color:var(--fg); font-weight:500; text-align:right; }
+  .stack-more{ color:var(--accent); }
+  .stack-more:hover{ text-decoration:underline; }
+
+  /* ---------------- LAB / PLAYGROUND ---------------- */
+  .lab-grid{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr));
+    gap:1px; background:var(--line);
+  }
+  .lab-card{
+    background:var(--bg); padding:34px 26px; min-height:180px;
+    display:flex; flex-direction:column; justify-content:space-between;
+    transition:background 0.3s ease;
+  }
+  .lab-card:hover{ background:#121214; }
+  .lab-card .lab-title{ font-family:'Big Shoulders Display',sans-serif; text-transform:uppercase; font-weight:700; font-size:15px; }
+  .lab-card .lab-desc{ font-size:12px; color:var(--ash); font-family:'IBM Plex Mono',monospace; margin-top:14px; line-height:1.6; }
+  .lab-card .lab-go{
+    display:block; margin-top:10px; color:var(--accent); opacity:0;
+    transform:translateY(-4px); transition:opacity 0.25s ease, transform 0.25s ease;
+  }
+  .lab-card:hover .lab-go{ opacity:1; transform:translateY(0); }
+
+  /* ---------------- THE WALL (posters / for fun) ---------------- */
+  .wall-controls{
+    display:flex; align-items:center; gap:20px;
+    font-size:11px; color:var(--ash); letter-spacing:0.1em;
+  }
+  .wall-hint{ display:none; }
+  @media (min-width:720px){ .wall-hint{ display:inline; } }
+  .shuffle-btn{
+    background:none; border:1px solid var(--line); color:var(--fg);
+    font-size:11px; letter-spacing:0.1em; text-transform:uppercase;
+    padding:7px 14px; cursor:pointer;
+    transition:border-color 0.25s ease, color 0.25s ease, transform 0.25s ease;
+  }
+  .shuffle-btn:hover{ border-color:var(--accent); color:var(--accent); }
+  .shuffle-btn:active{ transform:scale(0.94); }
+  .shuffle-btn.spin svg, .shuffle-btn.spin{ animation:none; }
+
+  .wall-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(190px, 1fr));
+    gap:34px 28px;
+  }
+  .pin{
+    position:relative;
+    background:#161617;
+    border:1px solid var(--line);
+    padding:14px 14px 18px;
+    transform:rotate(var(--r, 0deg));
+    transition:transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, opacity 0.3s ease;
+    box-shadow:0 10px 24px rgba(0,0,0,0.35);
+    cursor:grab;
+  }
+  .pin:hover{
+    transform:rotate(0deg) scale(1.04) translateY(-4px);
+    box-shadow:0 18px 34px rgba(0,0,0,0.5);
+    border-color:var(--accent);
+    z-index:5;
+  }
+  .pin::before{
+    content:'';
+    position:absolute; top:-7px; left:50%; transform:translateX(-50%) rotate(-3deg);
+    width:26px; height:14px;
+    background:var(--accent);
+    opacity:0.9;
+    clip-path:polygon(0 0, 100% 0, 92% 100%, 8% 100%);
+  }
+  .pin .pin-img{
+    width:100%; aspect-ratio:4/5; object-fit:cover; object-position:center; display:block;
+    background:var(--panel);
+    filter:saturate(0.96);
+    pointer-events:none;
+  }
+  .pin video.pin-img{ object-position:center; }
+  .pin.tall .pin-img{ object-position:top; }
+  .pin.wide .pin-img{ aspect-ratio:16/10; }
+  .pin-expand{
+    position:absolute; top:18px; right:18px;
+    background:rgba(0,0,0,0.65); color:var(--fg);
+    font-size:10px; letter-spacing:0.08em; text-transform:uppercase;
+    padding:4px 8px; opacity:0; transition:opacity 0.25s ease;
+    pointer-events:none;
+  }
+  .pin:hover .pin-expand{ opacity:1; }
+  .pin.is-video .pin-img{ filter:saturate(0.85) brightness(0.8); }
+  .pin-play{
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:42px; height:42px; border-radius:50%;
+    background:rgba(0,0,0,0.55); border:1px solid var(--accent);
+    color:var(--accent); display:flex; align-items:center; justify-content:center;
+    font-size:13px; pointer-events:none;
+  }
+  .pin .pin-cap{
+    margin-top:10px; font-size:11px; color:var(--ash);
+    letter-spacing:0.06em; line-height:1.4;
+  }
+  .pin .pin-cap b{ color:var(--fg); font-weight:500; }
+
+  .pin.empty{
+    aspect-ratio:4/5; height:auto;
+    display:flex; align-items:center; justify-content:center;
+    border:1px dashed var(--line);
+    background:transparent;
+    box-shadow:none;
+  }
+  .pin.empty:hover{ transform:rotate(0deg); border-color:var(--ash); box-shadow:none; }
+  .pin.empty .pin-plus{
+    font-size:11px; color:var(--ash); letter-spacing:0.12em; text-align:center;
+    font-family:'IBM Plex Mono',monospace; text-transform:uppercase; padding:0 16px;
+    pointer-events:none;
+  }
+
+  /* drag + shuffle states */
+  .pin.dragging{ opacity:0.25; cursor:grabbing; }
+  .pin.drag-over{ border-color:var(--accent); }
+  .pin.shuffle-out{ opacity:0; transform:scale(0.82) rotate(var(--r,0deg)); }
+  .pin.shuffle-in{ opacity:0; transform:scale(0.82) rotate(var(--r,0deg)); }
+
+  /* wall lightbox (reuses modal-overlay) */
+  .lightbox-panel{
+    max-width:680px; padding:24px; background:var(--panel);
+  }
+  .lightbox-content{ max-height:82vh; overflow-y:auto; }
+  .lightbox-content img, .lightbox-content video{
+    width:100%; display:block; border:1px solid var(--line);
+  }
+  .lightbox-cap{
+    margin-top:14px; font-size:11px; color:var(--ash); letter-spacing:0.06em;
+  }
+
+  /* ---------------- MOTION DESIGN GRID ---------------- */
+  .motion-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr));
+    gap:24px;
+  }
+  .motion-card{
+    position:relative; border:1px solid var(--line); background:var(--panel);
+    cursor:pointer;
+    transition:transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  .motion-card:hover{
+    transform:translateY(-5px); border-color:var(--accent);
+    box-shadow:0 18px 32px rgba(0,0,0,0.4);
+  }
+  .motion-thumb{
+    position:relative; aspect-ratio:16/9; overflow:hidden; background:#000;
+  }
+  .motion-thumb img, .motion-thumb video{
+    position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;
+  }
+  .motion-thumb video{ opacity:0; transition:opacity 0.3s ease; }
+  .motion-card:hover .motion-thumb video{ opacity:1; }
+  .motion-card:hover .motion-thumb img{ opacity:0; }
+  .motion-play{
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:44px; height:44px; border-radius:50%;
+    background:rgba(0,0,0,0.55); border:1px solid var(--accent);
+    color:var(--accent); display:flex; align-items:center; justify-content:center;
+    font-size:13px; transition:opacity 0.25s ease; pointer-events:none; z-index:2;
+  }
+  .motion-card:hover .motion-play{ opacity:0; }
+  .motion-meta{ padding:14px 16px 16px; }
+  .motion-title{
+    font-family:'Big Shoulders Display', sans-serif; text-transform:uppercase;
+    font-weight:700; font-size:15px; margin-bottom:8px; color:var(--fg);
+  }
+  .motion-tags{ display:flex; flex-wrap:wrap; gap:6px; }
+  .motion-tag{
+    font-size:10px; color:var(--ash); letter-spacing:0.05em;
+    border:1px solid var(--line); border-radius:10px; padding:3px 9px;
+  }
+  .motion-card.empty{
+    aspect-ratio:16/9; height:auto;
+    display:flex; align-items:center; justify-content:center;
+    border:1px dashed var(--line); background:transparent; cursor:default;
+  }
+  .motion-card.empty:hover{ transform:none; border-color:var(--ash); box-shadow:none; }
+  .motion-card.empty .motion-plus{
+    font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--ash);
+    letter-spacing:0.12em; text-transform:uppercase; text-align:center; padding:0 16px;
+  }
+  .motion-card.is-hidden{ display:none; }
+
+  /* ---------------- STACK ---------------- */
+  .section-head .count .dot{
+    display:inline-block; width:6px; height:6px; border-radius:50%;
+    background:var(--line); margin-right:4px; vertical-align:middle;
+  }
+  .section-head .count .dot.core{ background:var(--accent); }
+
+  .stack-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));
+    gap:48px;
+  }
+  .stack-cat{
+    font-family:'Big Shoulders Display', sans-serif; text-transform:uppercase;
+    font-weight:700; font-size:13px; letter-spacing:0.12em; color:var(--ash);
+    border-bottom:1px solid var(--line); padding-bottom:10px; margin-bottom:16px;
+  }
+  .stack-col ul{ list-style:none; }
+  .stack-col li{
+    font-family:'IBM Plex Mono', monospace; font-size:13px; color:var(--fg);
+    display:flex; align-items:center; gap:10px; padding:7px 0;
+  }
+  .stack-col li.core{ color:var(--fg); font-weight:500; }
+  .stack-col li .dot{
+    width:6px; height:6px; border-radius:50%; flex:none; background:var(--line);
+  }
+  .stack-col li .dot.core{ background:var(--accent); }
+
+  /* ---------------- FOOTER ---------------- */
+  footer{
+    padding:120px 5vw 60px;
+    border-top:1px solid var(--line);
+  }
+  .footer-cta{
+    font-family:'Big Shoulders Display', sans-serif; text-transform:uppercase;
+    font-weight:900; font-size:clamp(34px, 8vw, 96px);
+    line-height:0.95;
+  }
+  .footer-cta a{ color:var(--accent); }
+  .footer-bottom{
+    display:flex; justify-content:space-between; align-items:flex-end;
+    margin-top:80px; flex-wrap:wrap; gap:24px;
+    font-size:11px; color:var(--ash); letter-spacing:0.1em;
+  }
+  .footer-bottom .socials{ display:flex; gap:22px; }
+  .footer-bottom .socials a{ position:relative; }
+  .footer-bottom .socials a::after{
+    content:''; position:absolute; left:0; bottom:-4px; width:0; height:1px; background:var(--accent);
+    transition:width 0.3s ease;
+  }
+  .footer-bottom .socials a:hover::after{ width:100%; }
+  .footer-bottom .socials a:hover{ color:var(--fg); }
+
+  @media (max-width:720px){
+    .about-grid{ grid-template-columns:1fr; }
+    .work-row{ grid-template-columns:34px 1fr; row-gap:8px; }
+    .work-row .tag, .work-row .arrow{ grid-column:2; }
+    nav{ font-size:10px; padding:16px 5vw; }
+    nav .links{ gap:16px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+  <canvas id="bgParticles"></canvas>
+  <div id="cursorRing"></div>
+  <div id="cursorDot"></div>
+
+  <!-- LOADER -->
+  <div id="loader">
+    <canvas id="cloudCanvas" width="280" height="280"></canvas>
+    <div id="loaderLabel">aligning points — <span id="loaderPct">0</span></div>
+  </div>
+
+  <!-- NAV -->
+  <nav>
+    <div class="brand mono">V.H.</div>
+    <div class="links mono">
+      <a href="#work">01 work</a>
+      <a href="#about">02 about</a>
+      <a href="#lab">03 lab</a>
+      <a href="#wall">04 wall</a>
+      <a href="#motion">05 motion</a>
+      <a href="#stack">06 stack</a>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle light / dark mode" title="Toggle light / dark mode">
+        <span class="ic sun">&#9728;</span><span class="ic moon">&#9789;</span>
+        <span class="knob"></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="eyebrow mono">creative technologist — currently digitizing ruins for unesco</div>
+    <h1 class="name display" id="heroName">
+      <span data-line="Vasiliki">Vasiliki</span>
+      <span class="accent" data-line="Hadzikosta">Hadzikosta</span>
+    </h1>
+    <p class="role">Most of what I work on started out as a ruin. By day I help put ancient sites back together inside Unreal, point by scanned point — by night I make smaller, stranger things just because I can.</p>
+    <div class="hero-status mono" id="heroStatus">
+      <span class="dot"></span><span id="statusText">building something strange</span>
+    </div>
+    <div class="scrollcue mono"><div class="bar"></div>scroll · drag the dust</div>
+  </div>
+
+  <!-- CLOCK STRIP -->
+  <div class="clockstrip mono" id="clockstrip">
+    <div class="item">PAR <b id="t-par">--:--</b></div>
+    <div class="item">ANGKOR <b id="t-angkor">--:--</b></div>
+    <div class="item">MOSUL <b id="t-mosul">--:--</b></div>
+    <div class="item">LA <b id="t-la">--:--</b></div>
+  </div>
+
+  <!-- WORK -->
+  <section id="work">
+    <div class="section-head">
+      <div class="num mono">01 / SELECTED WORK</div>
+      <h2>Work</h2>
+      <div class="count mono">14 PROJECTS</div>
+    </div>
+
+    <div class="filter-row mono" id="filterRow">
+      <button class="filter-pill active" data-filter="all">All</button>
+      <button class="filter-pill" data-filter="heritage">Heritage &amp; 3D</button>
+      <button class="filter-pill" data-filter="product">Product &amp; UX</button>
+      <button class="filter-pill" data-filter="brand">Brand &amp; Web</button>
+      <button class="filter-pill" data-filter="personal">Personal &amp; Code</button>
+      <button class="filter-pill" data-filter="film">Film &amp; Thesis</button>
+    </div>
+
+    <div class="project-grid" id="projectGrid">
+
+      <article class="project-card" data-category="heritage" data-modal="iconem">
+        <div class="card-thumb placeholder-thumb"><span class="thumb-icon">⛰</span></div>
+        <div class="card-meta">
+          <span class="card-idx mono">01</span>
+          <h3 class="card-title">Iconem — Heritage in 3D</h3>
+          <span class="card-tag mono">photogrammetry / unreal / ue shaders</span>
+        </div>
+      </article>
+
+      <article class="project-card" data-category="brand" data-modal="tournee">
+        <div class="card-thumb placeholder-thumb"><span class="thumb-icon">◐</span></div>
+        <div class="card-meta">
+          <span class="card-idx mono">02</span>
+          <h3 class="card-title">La Tournée des Galeries</h3>
+          <span class="card-tag mono">react / tally / gallery culture</span>
+        </div>
+      </article>
+
+      <article class="project-card" data-category="brand" data-modal="almadoro">
+        <div class="card-thumb placeholder-thumb"><span class="thumb-icon">✦</span></div>
+        <div class="card-meta">
+          <span class="card-idx mono">03</span>
+          <h3 class="card-title">Alma D'Oro — Pistachio LAVA</h3>
+          <span class="card-tag mono">brand system / digital menu boards</span>
+        </div>
+      </article>
+
+      <article class="project-card" data-category="personal" data-modal="isometric">
+        <div class="card-thumb placeholder-thumb"><span class="thumb-icon">◇</span></div>
+        <div class="card-meta">
+          <span class="card-idx mono">04</span>
+          <h3 class="card-title">Isometric Portfolio World</h3>
+          <span class="card-tag mono">pixel art / p5.js / walkable ui</span>
+        </div>
+      </article>
+
+      <article class="project-card" data-category="product" data-modal="wingmate">
+        <div class="card-thumb"><img src="images/wingmate/mode2.png" alt="Wingmate Flight Mode screen" loading="lazy"></div>
+        <div class="card-meta">
+          <span class="card-idx mono">05</span>
+          <h3 class="card-title">Wingmate — Seatmate Matching App</h3>
+          <span class="card-tag mono">ux/ui · ios · end-to-end · first project</span>
+        </div>
+      </article>
+
+      <article class="project-card" data-category="film" data-modal="labyrinth">
+        <div class="card-thumb"><img src="https://vumbnail.com/782162719.jpg" alt="Labyrinth of Broken Dreams thumbnail" loading="lazy"></div>
+        <div class="card-meta">
+          <span class="card-idx mono">06</span>
+          <h3 class="card-title">Labyrinth of Broken Dreams</h3>
+          <span class="card-tag mono">2022 — rhino / 3df zephyr</span>
+        </div>
+      </article>
+
+      <article class="project-card" data-category="film" data-modal="greenray">
+        <div class="card-thumb"><img src="https://vumbnail.com/782178049.jpg" alt="The Green Ray thumbnail" loading="lazy"></div>
+        <div class="card-meta">
+          <span class="card-idx mono">07</span>
+          <h3 class="card-title">The Green Ray</h3>
+          <span class="card-tag mono">vimeo / 782178049</span>
+        </div>
+      </article>
+
+      <article class="project-card" data-category="film" data-modal="tissage">
+        <div class="card-thumb"><img src="https://vumbnail.com/797873024.jpg" alt="Tissage thumbnail" loading="lazy"></div>
+        <div class="card-meta">
+          <span class="card-idx mono">08</span>
+          <h3 class="card-title">Tissage</h3>
+          <span class="card-tag mono">vimeo / 797873024</span>
+        </div>
+      </article>
+
+      <article class="project-card" data-category="film" data-modal="unityfinal">
+        <div class="card-thumb"><img src="https://vumbnail.com/895663424.jpg" alt="Unity Final thumbnail" loading="lazy"></div>
+        <div class="card-meta">
+          <span class="card-idx mono">09</span>
+          <h3 class="card-title">Unity Final</h3>
+          <span class="card-tag mono">vimeo / 895663424</span>
+        </div>
+      </article>
+
+      <article class="project-card" data-category="film" data-modal="finalthesis">
+        <div class="card-thumb"><img src="https://vumbnail.com/945507158.jpg" alt="Final Thesis thumbnail" loading="lazy"></div>
+        <div class="card-meta">
+          <span class="card-idx mono">10</span>
+          <h3 class="card-title">Final Thesis</h3>
+          <span class="card-tag mono">vimeo / 945507158</span>
+        </div>
+      </article>
+
+      <article class="project-card" data-category="film" data-modal="visualjam">
+        <div class="card-thumb"><img src="https://vumbnail.com/1052961100.jpg" alt="Final Visual Jam thumbnail" loading="lazy"></div>
+        <div class="card-meta">
+          <span class="card-idx mono">11</span>
+          <h3 class="card-title">Final Visual Jam</h3>
+          <span class="card-tag mono">vimeo / 1052961100</span>
+        </div>
+      </article>
+
+      <article class="project-card" data-category="personal" data-modal="memories">
+        <div class="card-thumb placeholder-thumb"><span class="thumb-icon">&#10227;</span></div>
+        <div class="card-meta">
+          <span class="card-idx mono">12</span>
+          <h3 class="card-title">Memories Out of Order</h3>
+          <span class="card-tag mono">non-linear archive / stable diffusion</span>
+        </div>
+      </article>
+
+      <article class="project-card" data-category="product" data-modal="glucosegoddess">
+        <div class="card-thumb"><img src="images/glucosegoddess/anti-spike-mobile.jpg" alt="Glucose Goddess — What to expect with Anti-Spike, mobile accordion" loading="lazy"></div>
+        <div class="card-meta">
+          <span class="card-idx mono">13</span>
+          <h3 class="card-title">Glucose Goddess — Anti&#8211;Spike</h3>
+          <span class="card-tag mono">mobile ux / accordion / health</span>
+        </div>
+      </article>
+
+      <article class="project-card" data-category="brand" data-modal="biltcard">
+        <div class="card-thumb"><img src="images/bilt/insta-1.jpg" alt="BILT — Rent is due. So are the perks. Instagram carousel" loading="lazy"></div>
+        <div class="card-meta">
+          <span class="card-idx mono">14</span>
+          <h3 class="card-title">BILT Card</h3>
+          <span class="card-tag mono">campaign / motion / social</span>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- PROJECT MODAL -->
+  <div class="modal-overlay" id="projectModal">
+    <div class="modal-panel">
+      <button class="modal-close" id="modalClose" aria-label="Close case study">×</button>
+      <div class="modal-content" id="modalContent"></div>
+    </div>
+  </div>
+
+  <!-- MODAL TEMPLATES (cloned into the modal on click) -->
+  <template id="tmpl-iconem">
+    <div class="modal-head">
+      <span class="modal-cat mono">heritage &amp; 3d</span>
+      <h2>Iconem — Heritage in 3D</h2>
+      <span class="modal-tag mono">photogrammetry / unreal / ue shaders</span>
+    </div>
+    <p class="work-desc">Heritage sites digitized into walkable, photogrammetry-built 3D experiences for UNESCO, governments, and major museums — point clouds turned into navigable worlds people can actually move through.</p>
+    <p class="modal-pending mono">full case study coming soon — send screenshots and this gets built out properly</p>
+  </template>
+
+  <template id="tmpl-tournee">
+    <div class="modal-head">
+      <span class="modal-cat mono">brand &amp; web</span>
+      <h2>La Tournée des Galeries</h2>
+      <span class="modal-tag mono">react / tally / gallery culture</span>
+    </div>
+    <p class="work-desc">A Paris gallery-vernissage Instagram brand (@latourneeparis), built out into a full three-tab tool — post generator, public submission form, and admin panel — with a four-flute "pinard estimé" wine-rating system at its core, integrated with Tally.so.</p>
+    <p class="modal-pending mono">full case study coming soon — send screenshots and this gets built out properly</p>
+  </template>
+
+  <template id="tmpl-almadoro">
+    <div class="modal-head">
+      <span class="modal-cat mono">brand &amp; web</span>
+      <h2>Alma D'Oro — Pistachio LAVA</h2>
+      <span class="modal-tag mono">brand system / digital menu boards</span>
+    </div>
+    <p class="work-desc">A full visual identity for a NYC gelato business — pistachio-green palette, Cormorant Garamond paired with DM Sans, and a 1920×1080 digital menu board system with a rotating hero panel, including the Pistachio LAVA landing page.</p>
+    <p class="modal-pending mono">full case study coming soon — send screenshots and this gets built out properly</p>
+  </template>
+
+  <template id="tmpl-isometric">
+    <div class="modal-head">
+      <span class="modal-cat mono">personal &amp; code</span>
+      <h2>Isometric Portfolio World</h2>
+      <span class="modal-tag mono">pixel art / p5.js / walkable ui</span>
+    </div>
+    <p class="work-desc">A second life for this very portfolio — an isometric, walkable world where a pixel-art avatar wanders between pavilions for The Lab, Iconem work, case studies, and about. Still mid-build, real assets going in.</p>
+    <p class="modal-pending mono">full case study coming soon — send screenshots and this gets built out properly</p>
+  </template>
+
+  <template id="tmpl-memories">
+    <div class="modal-head">
+      <span class="modal-cat mono">personal &amp; code</span>
+      <h2>Memories Out of Order</h2>
+      <span class="modal-tag mono">python &#183; unity &#183; after effects &#183; runs locally</span>
+    </div>
+
+    <div class="mem-brief">
+      <div class="mem-eyebrow mono">THE BRIEF</div>
+      <p class="case-tagline">&#8220;Time is out of order.&#8221; Design a small interaction, system, or visualization where time isn&#8217;t linear. What does that mean for input, output, or user navigation? Explore how GenAI could represent or reshape that logic.</p>
+    </div>
+    <p class="mem-disclaimer mono">NOTE &#8212; independent project. Not an official collaboration with, or endorsed by, C+T.</p>
+
+    <p class="work-desc">Songs don't trigger memories in order. Whenever a track plays, a different story surfaces — often from a totally different age, with no logic tying one to the next. This became a small local installation: someone pastes a Spotify link and/or a few lines about the memory, a Python backend pulls the track's metadata (title, artist, year) and merges it with their words into a weighted prompt, and a Unity frontend renders the result at center scale — shrinking and drifting every earlier memory outward, into a constellation of emotional fragments rather than a sequence.</p>
+
+    <div class="case-stage">
+      <div class="case-stage-label mono">01 &#183; the concept</div>
+      <div class="memory-stack">
+
+        <!-- card 1 — the concept -->
+        <figure class="memory-card" style="--r:-2.5deg">
+          <svg class="mem-svg" viewBox="0 0 400 520" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="curtainL1" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="var(--accent)" stop-opacity="1"/>
+                <stop offset="100%" stop-color="var(--accent)" stop-opacity="0.65"/>
+              </linearGradient>
+              <linearGradient id="curtainR1" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.55"/>
+                <stop offset="100%" stop-color="var(--accent)" stop-opacity="0.85"/>
+              </linearGradient>
+            </defs>
+            <g stroke="var(--accent)" stroke-width="2" fill="none">
+              <path d="M16,32 L16,16 L32,16"/><path d="M368,16 L384,16 L384,32"/>
+              <path d="M16,488 L16,504 L32,504"/><path d="M368,504 L384,504 L384,488"/>
+            </g>
+            <text x="28" y="46" style="font-family:'IBM Plex Mono',monospace; font-weight:500; letter-spacing:0.16em; font-size:10.5px; fill:var(--accent);">A NON&#8211;LINEAR MEMORY PROJECT</text>
+            <text x="26" y="104" style="font-family:'Big Shoulders Display',sans-serif; font-weight:800; text-transform:uppercase; font-size:44px; fill:var(--fg);">Time is</text>
+            <text x="26" y="150" style="font-family:'Big Shoulders Display',sans-serif; font-weight:800; text-transform:uppercase; font-size:44px; fill:var(--fg);">out of order</text>
+            <text x="28" y="186" style="font-family:'IBM Plex Mono',monospace; font-weight:500; letter-spacing:0.05em; font-size:10.5px; fill:var(--ash);">NON&#8211;LINEAR STORYTELLING, AFTER DAVID LYNCH</text>
+            <text x="28" y="203" style="font-family:'IBM Plex Mono',monospace; font-weight:500; letter-spacing:0.05em; font-size:10.5px; fill:var(--ash);">TIME AS MEMORY &#183; AS DREAM &#183; AS HOPE</text>
+            <line x1="28" y1="226" x2="372" y2="226" stroke="var(--line)" stroke-width="1"/>
+            <text x="28" y="260" style="font-family:'Spectral',serif; font-style:italic; font-size:18px; fill:var(--fg);">&#8220;Whenever I listen to a song, a</text>
+            <text x="28" y="286" style="font-family:'Spectral',serif; font-style:italic; font-size:18px; fill:var(--fg);">different story comes to mind&#8212;every</text>
+            <text x="28" y="312" style="font-family:'Spectral',serif; font-style:italic; font-size:18px; fill:var(--fg);">one tied to a totally random memory.&#8221;</text>
+
+            <rect x="28" y="356" width="344" height="124" fill="none" stroke="var(--line)" stroke-width="1"/>
+            <g>
+              <polygon points="28,356 128,356 95,436 28,436" fill="url(#curtainL1)"/>
+              <polygon points="372,356 272,356 305,436 372,436" fill="url(#curtainR1)"/>
+              <g stroke="var(--bg)" stroke-width="1.5" opacity="0.35">
+                <path d="M52,356 L42,436"/><path d="M80,356 L70,436"/><path d="M108,356 L100,436"/>
+                <path d="M348,356 L358,436"/><path d="M320,356 L330,436"/><path d="M292,356 L300,436"/>
+              </g>
+              <g fill="var(--fg)">
+                <rect x="28" y="440" width="20" height="20"/><rect x="68" y="440" width="20" height="20"/><rect x="108" y="440" width="20" height="20"/>
+                <rect x="148" y="440" width="20" height="20"/><rect x="188" y="440" width="20" height="20"/><rect x="228" y="440" width="20" height="20"/>
+                <rect x="268" y="440" width="20" height="20"/><rect x="308" y="440" width="20" height="20"/><rect x="348" y="440" width="20" height="20"/>
+                <rect x="48" y="460" width="20" height="20"/><rect x="88" y="460" width="20" height="20"/><rect x="128" y="460" width="20" height="20"/>
+                <rect x="168" y="460" width="20" height="20"/><rect x="208" y="460" width="20" height="20"/><rect x="248" y="460" width="20" height="20"/>
+                <rect x="288" y="460" width="20" height="20"/><rect x="328" y="460" width="20" height="20"/>
+              </g>
+            </g>
+          </svg>
+          <figcaption class="memory-cap mono">01 &#183; the concept</figcaption>
+        </figure>
+
+        <!-- card 2 — the interface -->
+        <figure class="memory-card" style="--r:1.5deg">
+          <svg class="mem-svg" viewBox="0 0 400 520" xmlns="http://www.w3.org/2000/svg">
+            <g stroke="var(--accent)" stroke-width="2" fill="none">
+              <path d="M16,32 L16,16 L32,16"/><path d="M368,16 L384,16 L384,32"/>
+              <path d="M16,488 L16,504 L32,504"/><path d="M368,504 L384,504 L384,488"/>
+            </g>
+            <text x="28" y="46" style="font-family:'IBM Plex Mono',monospace; font-weight:500; letter-spacing:0.16em; font-size:10.5px; fill:var(--accent);">THE INTERFACE</text>
+            <text x="26" y="104" style="font-family:'Big Shoulders Display',sans-serif; font-weight:800; text-transform:uppercase; font-size:40px; fill:var(--fg);">A drifting</text>
+            <text x="26" y="150" style="font-family:'Big Shoulders Display',sans-serif; font-weight:800; text-transform:uppercase; font-size:40px; fill:var(--fg);">constellation</text>
+            <text x="28" y="186" style="font-family:'IBM Plex Mono',monospace; font-weight:500; letter-spacing:0.05em; font-size:10.5px; fill:var(--ash);">NEW MEMORY AT CENTER&#8212;OLDER ONES</text>
+            <text x="28" y="203" style="font-family:'IBM Plex Mono',monospace; font-weight:500; letter-spacing:0.05em; font-size:10.5px; fill:var(--ash);">SHRINK &amp; DRIFT OUTWARD</text>
+            <line x1="28" y1="226" x2="372" y2="226" stroke="var(--line)" stroke-width="1"/>
+
+            <rect x="28" y="252" width="344" height="190" fill="none" stroke="var(--line)" stroke-width="1"/>
+            <g>
+              <rect x="167" y="304" width="66" height="66" fill="var(--accent)" rx="2"/>
+              <rect x="68" y="278" width="28" height="28" fill="var(--fg)" opacity="0.85" rx="2" transform="rotate(6 82 292)"/>
+              <rect x="290" y="272" width="24" height="24" fill="var(--ash)" opacity="0.8" rx="2" transform="rotate(-5 302 284)"/>
+              <rect x="60" y="378" width="22" height="22" fill="var(--fg)" opacity="0.7" rx="2" transform="rotate(-4 71 389)"/>
+              <rect x="296" y="372" width="30" height="30" fill="var(--accent)" opacity="0.5" rx="2" transform="rotate(5 311 387)"/>
+              <rect x="120" y="394" width="18" height="18" fill="var(--ash)" opacity="0.55" rx="2" transform="rotate(3 129 403)"/>
+              <rect x="250" y="396" width="20" height="20" fill="var(--fg)" opacity="0.45" rx="2" transform="rotate(-3 260 406)"/>
+              <rect x="178" y="266" width="16" height="16" fill="var(--ash)" opacity="0.4" rx="2" transform="rotate(4 186 274)"/>
+            </g>
+            <text x="200" y="468" text-anchor="middle" style="font-family:'IBM Plex Mono',monospace; font-weight:500; letter-spacing:0.06em; font-size:10px; fill:var(--ash);">EMOTIONAL FRAGMENTS, NOT A SEQUENCE</text>
+          </svg>
+          <figcaption class="memory-cap mono">02 &#183; the interface</figcaption>
+        </figure>
+
+        <!-- card 3 — how it works -->
+        <figure class="memory-card" style="--r:-1.5deg">
+          <svg class="mem-svg" viewBox="0 0 400 520" xmlns="http://www.w3.org/2000/svg">
+            <g stroke="var(--accent)" stroke-width="2" fill="none">
+              <path d="M16,32 L16,16 L32,16"/><path d="M368,16 L384,16 L384,32"/>
+              <path d="M16,488 L16,504 L32,504"/><path d="M368,504 L384,504 L384,488"/>
+            </g>
+            <text x="28" y="46" style="font-family:'IBM Plex Mono',monospace; font-weight:500; letter-spacing:0.16em; font-size:10.5px; fill:var(--accent);">HOW IT WORKS</text>
+            <text x="26" y="104" style="font-family:'Big Shoulders Display',sans-serif; font-weight:800; text-transform:uppercase; font-size:40px; fill:var(--fg);">Memories,</text>
+            <text x="26" y="150" style="font-family:'Big Shoulders Display',sans-serif; font-weight:800; text-transform:uppercase; font-size:40px; fill:var(--fg);">out of order</text>
+            <line x1="28" y1="174" x2="372" y2="174" stroke="var(--line)" stroke-width="1"/>
+
+            <text x="28" y="208" style="font-family:'IBM Plex Mono',monospace; font-weight:500; font-size:15px; fill:var(--accent);">01</text>
+            <text x="62" y="208" style="font-family:'IBM Plex Mono',monospace; font-weight:500; letter-spacing:0.08em; font-size:13px; fill:var(--fg);">SUBMIT</text>
+            <text x="28" y="228" style="font-family:'Spectral',serif; font-style:italic; font-size:14px; fill:var(--ash);">a Spotify link and/or a few lines</text>
+            <line x1="28" y1="246" x2="372" y2="246" stroke="var(--line)" stroke-width="1"/>
+
+            <text x="28" y="276" style="font-family:'IBM Plex Mono',monospace; font-weight:500; font-size:15px; fill:var(--accent);">02</text>
+            <text x="62" y="276" style="font-family:'IBM Plex Mono',monospace; font-weight:500; letter-spacing:0.08em; font-size:13px; fill:var(--fg);">WEIGHT</text>
+            <text x="28" y="296" style="font-family:'Spectral',serif; font-style:italic; font-size:14px; fill:var(--ash);">metadata + your words, one weighted prompt</text>
+            <line x1="28" y1="314" x2="372" y2="314" stroke="var(--line)" stroke-width="1"/>
+
+            <text x="28" y="344" style="font-family:'IBM Plex Mono',monospace; font-weight:500; font-size:15px; fill:var(--accent);">03</text>
+            <text x="62" y="344" style="font-family:'IBM Plex Mono',monospace; font-weight:500; letter-spacing:0.08em; font-size:13px; fill:var(--fg);">DRIFT</text>
+            <text x="28" y="364" style="font-family:'Spectral',serif; font-style:italic; font-size:14px; fill:var(--ash);">new image takes center; older ones drift out</text>
+            <line x1="28" y1="382" x2="372" y2="382" stroke="var(--line)" stroke-width="1"/>
+
+            <g style="font-family:'IBM Plex Mono',monospace; font-weight:500; font-size:11px; fill:var(--ash);">
+              <rect x="28" y="404" width="116" height="30" rx="15" fill="none" stroke="var(--line)"/>
+              <text x="86" y="423" text-anchor="middle">nostalgic haze</text>
+              <rect x="156" y="404" width="143" height="30" rx="15" fill="none" stroke="var(--line)"/>
+              <text x="227" y="423" text-anchor="middle">golden&#8211;hour light</text>
+
+              <rect x="28" y="444" width="90" height="30" rx="15" fill="none" stroke="var(--line)"/>
+              <text x="73" y="463" text-anchor="middle">35mm grain</text>
+              <rect x="130" y="444" width="156" height="30" rx="15" fill="none" stroke="var(--line)"/>
+              <text x="208" y="463" text-anchor="middle">sun&#8211;bleached pastels</text>
+            </g>
+          </svg>
+          <figcaption class="memory-cap mono">03 &#183; how it works</figcaption>
+        </figure>
+
+      </div>
+    </div>
+
+    <div class="case-stage">
+      <div class="case-stage-label mono">02 &#183; concept reel</div>
+      <div class="scan-frame">
+        <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+        <div class="scan-label mono">REEL_01 &#183; MEMORIES OUT OF ORDER</div>
+        <!-- Drop your clip in at images/memories/concept-reel.mp4 (+ a poster frame at images/memories/concept-reel-poster.jpg) -->
+        <div class="video-embed">
+          <video controls playsinline poster="images/memories/concept-reel-poster.jpg">
+            <source src="images/memories/concept-reel.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+      <p class="mem-caption-sm mono" style="margin-top:12px;">CUT IN AFTER EFFECTS</p>
+    </div>
+  </template>
+
+  <template id="tmpl-glucosegoddess">
+    <div class="modal-head">
+      <span class="modal-cat mono">product &amp; ux</span>
+      <h2>Glucose Goddess — Anti&#8211;Spike</h2>
+      <span class="modal-tag mono">mobile ux / accordion / health &amp; wellness</span>
+    </div>
+    <p class="work-desc">A mobile education module for Anti&#8211;Spike, walking someone through what changes week by week once they start taking it. Each timepoint &#8212; Week 1, Month 2, Month 3 &#8212; opens as an accordion card: a one&#8211;line headline by default, expanding on tap into the supporting data (glucose and insulin spike reduction, whole&#8211;body lab results, GLP&#8211;1 increase, survey results from 800 customers). The goal was to let someone skim the timeline in five seconds, or go deep on the science in the same screen, without ever leaving the card.</p>
+
+    <div class="case-stage">
+      <div class="case-stage-label mono">01 &#183; the accordion</div>
+      <div class="phone-row">
+        <figure class="phone-frame"><img src="images/glucosegoddess/anti-spike-mobile.jpg" alt="What to expect with Anti-Spike — mobile accordion, default collapsed state" loading="lazy"></figure>
+      </div>
+    </div>
+
+    <div class="case-stage">
+      <div class="case-stage-label mono">02 &#183; expand states</div>
+      <figure class="desktop-frame"><img src="images/glucosegoddess/anti-spike-states.jpg" alt="Anti-Spike accordion across its collapsed and expanded states, Week 1 through Month 3" loading="lazy"></figure>
+    </div>
+  </template>
+
+  <template id="tmpl-biltcard">
+    <div class="modal-head">
+      <span class="modal-cat mono">brand &amp; web</span>
+      <h2>BILT Card</h2>
+      <span class="modal-tag mono">campaign / instagram carousel / motion</span>
+    </div>
+    <p class="work-desc">A small campaign for BILT, the card that turns rent payments into travel and lifestyle points. &#8220;Rent is due. So are the perks&#8221; carries through a five&#8211;panel Instagram carousel — from the hook, to how points are earned at home and in the neighborhood, to where they can be spent — closing on a single still poster built for the feed. A short looping motion piece of a BILT Rewards receipt printing out (boarding pass tucked into the tail of it) supports the same line across Reels and Stories.</p>
+
+    <div class="case-stage">
+      <div class="case-stage-label mono">01 &#183; the carousel</div>
+      <div class="insta-row">
+        <figure class="insta-frame"><img src="images/bilt/insta-1.jpg" alt="BILT carousel slide 1: Rent is due. So are the perks." loading="lazy"></figure>
+        <figure class="insta-frame"><img src="images/bilt/insta-2.jpg" alt="BILT carousel slide 2: earn points on every rent payment" loading="lazy"></figure>
+        <figure class="insta-frame"><img src="images/bilt/insta-3.jpg" alt="BILT carousel slide 3: your points, your world" loading="lazy"></figure>
+        <figure class="insta-frame"><img src="images/bilt/insta-4.jpg" alt="BILT carousel slide 4: paying rent now unlocks rewards and benefits" loading="lazy"></figure>
+        <figure class="insta-frame"><img src="images/bilt/insta-5.jpg" alt="BILT carousel slide 5: BILT logo" loading="lazy"></figure>
+      </div>
+    </div>
+
+    <div class="case-stage">
+      <div class="case-stage-label mono">02 &#183; the receipt, in motion</div>
+      <div class="scan-frame">
+        <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+        <div class="scan-label mono">REEL_01 &#183; BILT REWARDS RECEIPT</div>
+        <div class="insta-row" style="overflow:visible;">
+          <figure class="insta-frame" style="width:280px;">
+            <video src="images/bilt/bilt-receipt.mp4" poster="images/bilt/bilt-receipt-poster.jpg" autoplay muted loop playsinline></video>
+          </figure>
+        </div>
+      </div>
+    </div>
+
+    <div class="case-stage">
+      <div class="case-stage-label mono">03 &#183; the poster</div>
+      <div class="phone-row">
+        <figure class="phone-frame" style="width:200px; border-radius:6px;"><img src="images/bilt/poster.jpg" alt="BILT static feed poster — paying rent now unlocks rewards and benefits" loading="lazy"></figure>
+      </div>
+    </div>
+  </template>
+
+  <template id="tmpl-wingmate">
+    <div class="modal-head">
+      <span class="modal-cat mono">product &amp; ux</span>
+      <h2>Wingmate — Seatmate Matching App</h2>
+      <span class="modal-tag mono">ux/ui · ios · end-to-end · first project</span>
+    </div>
+    <div class="case-study">
+      <div class="case-hero">
+        <img class="case-logo" src="images/wingmate/logo.png" alt="Wingmate logo">
+        <p class="case-tagline">Your perfect seatmate, sorted.</p>
+      </div>
+      <p class="work-desc">Wingmate matches airline passengers with a compatible seatmate on the same flight. Instead of leaving who you sit next to entirely up to chance, people set a "Flight Mode" — Quiet, Social, Explorer, Business, or Romantic — answer a short personality and preference quiz, and get matched with someone on their flight who's looking for the same kind of company. Matches can chat before takeoff, and the whole loop is held together by push notifications and a trip dashboard. Built end-to-end: onboarding, sign-in, the quiz, mode selection (mobile and a desktop companion view), matching, in-app chat, and notifications.</p>
+
+      <div class="case-stage">
+        <div class="case-stage-label mono">01 · onboarding &amp; sign-in</div>
+        <div class="phone-row">
+          <figure class="phone-frame"><img src="images/wingmate/Landpage.png" alt="Onboarding screen: You're not like everyone else." loading="lazy"></figure>
+          <figure class="phone-frame"><img src="images/wingmate/Landpage_2.png" alt="Onboarding screen: Where you sit matters." loading="lazy"></figure>
+          <figure class="phone-frame"><img src="images/wingmate/Sign_In.png" alt="Sign in screen with Apple, Google, and phone number options" loading="lazy"></figure>
+          <figure class="phone-frame"><img src="images/wingmate/Signing_In.png" alt="Sign in loading state" loading="lazy"></figure>
+        </div>
+      </div>
+
+      <div class="case-stage">
+        <div class="case-stage-label mono">02 · the quiz</div>
+        <div class="phone-row">
+          <figure class="phone-frame"><img src="images/wingmate/social_setting.png" alt="Quiz question: social setting preference" loading="lazy"></figure>
+          <figure class="phone-frame"><img src="images/wingmate/in_fligth_vibe.png" alt="Quiz question: how you spend time on a plane" loading="lazy"></figure>
+          <figure class="phone-frame"><img src="images/wingmate/interests.png" alt="Quiz screen: pick your interests" loading="lazy"></figure>
+          <figure class="phone-frame"><img src="images/wingmate/pick-1.png" alt="Quiz question: pick the option that feels most like you" loading="lazy"></figure>
+          <figure class="phone-frame"><img src="images/wingmate/hopes-1.png" alt="Quiz question: what are you hoping for on this flight" loading="lazy"></figure>
+        </div>
+      </div>
+
+      <div class="case-stage">
+        <div class="case-stage-label mono">03 · flight mode</div>
+        <div class="phone-row">
+          <figure class="phone-frame"><img src="images/wingmate/mode2.png" alt="Flight Mode selection screen, mobile" loading="lazy"></figure>
+        </div>
+        <figure class="desktop-frame"><img src="images/wingmate/Wingmate_web_workflow-1.png" alt="Desktop companion view: seat map and Flight Mode selection" loading="lazy"></figure>
+      </div>
+
+      <div class="case-stage">
+        <div class="case-stage-label mono">04 · matches &amp; conversation</div>
+        <div class="phone-row">
+          <figure class="phone-frame"><img src="images/wingmate/MATCHES.png" alt="Your Matches screen" loading="lazy"></figure>
+          <figure class="phone-frame"><img src="images/wingmate/in_conv.png" alt="In-app conversation with a match" loading="lazy"></figure>
+        </div>
+      </div>
+
+      <div class="case-stage">
+        <div class="case-stage-label mono">05 · notifications &amp; dashboard</div>
+        <div class="phone-row">
+          <figure class="phone-frame"><img src="images/wingmate/iOS_15_Push_Notifications_2.png" alt="Push notification: new flight added" loading="lazy"></figure>
+          <figure class="phone-frame"><img src="images/wingmate/iOS_15_Push_Notifications_3.png" alt="Push notification: match found" loading="lazy"></figure>
+          <figure class="phone-frame"><img src="images/wingmate/iOS_15_Push_Notifications.png" alt="Push notification: opted into a flight" loading="lazy"></figure>
+          <figure class="phone-frame"><img src="images/wingmate/Landpage_Onboarding.png" alt="Home dashboard, empty state" loading="lazy"></figure>
+          <figure class="phone-frame"><img src="images/wingmate/ejfje.png" alt="Home dashboard with trips and match status" loading="lazy"></figure>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <template id="tmpl-labyrinth">
+    <div class="modal-head">
+      <span class="modal-cat mono">film &amp; thesis</span>
+      <h2>Labyrinth of Broken Dreams</h2>
+      <span class="modal-tag mono">2022 — rhino / 3df zephyr</span>
+    </div>
+    <div class="scan-frame">
+      <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+      <div class="scan-label mono">SCAN_01 · 3D SCANNING.MP4</div>
+      <div class="video-embed">
+        <iframe src="https://player.vimeo.com/video/782162719?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" title="3d scanning.mp4" loading="lazy"></iframe>
+      </div>
+    </div>
+    <p class="work-desc">In New York, many people struggle to find a place to call home — feeling as though they've become lost in an endless maze. Every time the ideal place seems found, something goes wrong. This project sits inside that feeling: never quite closer to the door out, but resolved to keep looking.</p>
+  </template>
+
+  <template id="tmpl-greenray">
+    <div class="modal-head">
+      <span class="modal-cat mono">film &amp; thesis</span>
+      <h2>The Green Ray</h2>
+      <span class="modal-tag mono">vimeo / 782178049</span>
+    </div>
+    <div class="scan-frame">
+      <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+      <div class="scan-label mono">SCAN_02 · THE GREEN RAY</div>
+      <div class="video-embed">
+        <iframe src="https://player.vimeo.com/video/782178049?title=0&amp;byline=0&amp;portrait=0&amp;badge=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" title="The Green Ray" loading="lazy"></iframe>
+      </div>
+    </div>
+    <p class="work-desc">What is a human connection — how hard or easy is it to make, and how much does it affect us? This project was a place to explore that question, and to find connection with others, let alone with myself.</p>
+  </template>
+
+  <template id="tmpl-tissage">
+    <div class="modal-head">
+      <span class="modal-cat mono">film &amp; thesis</span>
+      <h2>Tissage</h2>
+      <span class="modal-tag mono">vimeo / 797873024</span>
+    </div>
+    <div class="scan-frame">
+      <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+      <div class="scan-label mono">SCAN_03 · TISSAGE</div>
+      <div class="video-embed">
+        <iframe src="https://player.vimeo.com/video/797873024?title=0&amp;byline=0&amp;portrait=0&amp;badge=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" title="Tissage" loading="lazy"></iframe>
+      </div>
+    </div>
+  </template>
+
+  <template id="tmpl-unityfinal">
+    <div class="modal-head">
+      <span class="modal-cat mono">film &amp; thesis</span>
+      <h2>Unity Final</h2>
+      <span class="modal-tag mono">vimeo / 895663424</span>
+    </div>
+    <div class="scan-frame">
+      <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+      <div class="scan-label mono">SCAN_04 · UNITY FINAL</div>
+      <div class="video-embed">
+        <iframe src="https://player.vimeo.com/video/895663424?title=0&amp;byline=0&amp;portrait=0&amp;badge=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" title="Unity Final" loading="lazy"></iframe>
+      </div>
+    </div>
+  </template>
+
+  <template id="tmpl-finalthesis">
+    <div class="modal-head">
+      <span class="modal-cat mono">film &amp; thesis</span>
+      <h2>Final Thesis</h2>
+      <span class="modal-tag mono">vimeo / 945507158</span>
+    </div>
+    <div class="scan-frame">
+      <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+      <div class="scan-label mono">SCAN_05 · FINAL THESIS</div>
+      <div class="video-embed">
+        <iframe src="https://player.vimeo.com/video/945507158?title=0&amp;byline=0&amp;portrait=0&amp;badge=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" title="Final Thesis" loading="lazy"></iframe>
+      </div>
+    </div>
+    <p class="work-desc">An exploration of feelings presented as a short film — a specific aesthetic applied to computer-generated clips to talk about the hard-to-describe fragility of human connection. The intention is to challenge the audience through non-linear, experimental narratives that blur reality and perception. Each of us sees the world slightly differently; this film celebrates that divergence, and asks what it is that forms our identity.</p>
+  </template>
+
+  <template id="tmpl-visualjam">
+    <div class="modal-head">
+      <span class="modal-cat mono">film &amp; thesis</span>
+      <h2>Final Visual Jam</h2>
+      <span class="modal-tag mono">vimeo / 1052961100</span>
+    </div>
+    <div class="scan-frame">
+      <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+      <div class="scan-label mono">SCAN_06 · FINAL VISUAL JAM</div>
+      <div class="video-embed">
+        <iframe src="https://player.vimeo.com/video/1052961100?title=0&amp;byline=0&amp;portrait=0&amp;badge=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" title="Final Visual Jam" loading="lazy"></iframe>
+      </div>
+    </div>
+    <p class="work-desc">A study of entanglement in the context of a long-distance relationship — focused on the lack of physical closeness, and the toll that takes. The piece uses quantum entanglement as a metaphor to fuel connection across distance: the music is a translation of quantum data into instruments and notes, with noisy qubits introducing random instrumentation that drifts in and out of the beat.</p>
+  </template>
+
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-head">
+      <div class="num mono">02 / ABOUT</div>
+      <h2>About</h2>
+      <div class="count mono">MEng + MFA</div>
+    </div>
+    <div class="about-grid">
+      <div class="lede">
+        <canvas class="lede-blob" id="aboutBlob" width="480" height="480"></canvas>
+        <span class="lede-text">I trained as an architect, then taught myself to think in <em>polygons and particles</em> instead of walls. Now I spend my days at Iconem turning UNESCO heritage sites into navigable point clouds — and my nights building strange little interactive worlds of my own.</span>
+      </div>
+      <div class="about-meta">
+        <div class="row"><span>role</span><b>3D Interactive Exhibition Designer</b></div>
+        <div class="row"><span>studio</span><b>Iconem, Paris</b></div>
+        <div class="row"><span>education</span><b>MFA Parsons / MEng AUTh</b></div>
+        <div class="row"><span>stack</span><b>Unreal · GLSL/HLSL · Photogrammetry · ComfyUI · Figma · <a href="#stack" class="stack-more">+ more ↓</a></b></div>
+        <div class="row"><span>currently reading</span><b>A Little Life</b></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LAB -->
+  <section id="lab">
+    <div class="section-head">
+      <div class="num mono">03 / PLAYGROUND</div>
+      <h2>The Lab</h2>
+      <div class="count mono">LIVE SKETCHES</div>
+    </div>
+    <div class="lab-grid">
+      <a class="lab-card" href="https://editor.p5js.org/vashadz/sketches/VwFBaCxM1" target="_blank" rel="noopener">
+        <div class="lab-title">Slit-Scan</div>
+        <div class="lab-desc">p5.js / time-as-texture experiment <span class="lab-go">→ open sketch</span></div>
+      </a>
+      <a class="lab-card" href="https://editor.p5js.org/vashadz/sketches/D7KGCKhOY" target="_blank" rel="noopener">
+        <div class="lab-title">Shaders Week 02</div>
+        <div class="lab-desc">GLSL fragment study <span class="lab-go">→ open sketch</span></div>
+      </a>
+      <a class="lab-card" href="https://editor.p5js.org/vashadz/sketches/PMc9yub4K" target="_blank" rel="noopener">
+        <div class="lab-title">Mapping Time</div>
+        <div class="lab-desc">generative timeline visualization <span class="lab-go">→ open sketch</span></div>
+      </a>
+      <a class="lab-card" href="https://editor.p5js.org/vashadz/sketches/Msizg5D1m" target="_blank" rel="noopener">
+        <div class="lab-title">Isabella Stewart — A Theft</div>
+        <div class="lab-desc">narrative interactive piece <span class="lab-go">→ open sketch</span></div>
+      </a>
+      <a class="lab-card" href="https://editor.p5js.org/vashadz/sketches/_3WIGV4u5" target="_blank" rel="noopener">
+        <div class="lab-title">Autobiographical Game</div>
+        <div class="lab-desc">p5.js / playable memory <span class="lab-go">→ open sketch</span></div>
+      </a>
+      <div class="lab-card">
+        <div class="lab-title">+ more soon</div>
+        <div class="lab-desc">always scanning something new</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WALL -->
+  <section id="wall">
+    <div class="section-head">
+      <div class="num mono">04 / FOR FUN</div>
+      <h2>The Wall</h2>
+      <div class="wall-controls mono">
+        <span class="wall-hint">drag to rearrange</span>
+        <button id="shuffleBtn" class="shuffle-btn mono">⟲ shuffle</button>
+        <span class="count" id="wallCount">— PIECES</span>
+      </div>
+    </div>
+    <div class="wall-grid" id="wallGrid"></div>
+  </section>
+
+  <!-- WALL LIGHTBOX -->
+  <div class="modal-overlay" id="wallLightbox">
+    <div class="modal-panel lightbox-panel">
+      <button class="modal-close" id="wallLightboxClose" aria-label="Close">×</button>
+      <div class="lightbox-content" id="wallLightboxContent"></div>
+    </div>
+  </div>
+
+  <!-- MOTION -->
+  <section id="motion">
+    <div class="section-head">
+      <div class="num mono">05 / MOTION DESIGN</div>
+      <h2>Motion</h2>
+      <div class="count mono" id="motionCount">— CLIPS</div>
+    </div>
+    <div class="filter-row mono" id="motionFilterRow">
+      <button class="filter-pill active" data-filter="all">All</button>
+    </div>
+    <div class="motion-grid" id="motionGrid"></div>
+  </section>
+
+  <!-- STACK -->
+  <section id="stack">
+    <div class="section-head">
+      <div class="num mono">06 / TOOLKIT</div>
+      <h2>The Stack</h2>
+      <div class="count mono"><span class="dot core"></span> daily &nbsp; <span class="dot"></span> occasional</div>
+    </div>
+    <div class="stack-grid">
+      <div class="stack-col">
+        <div class="stack-cat mono">capture &amp; reconstruction</div>
+        <ul>
+          <li class="core"><span class="dot core"></span>Photogrammetry pipelines</li>
+          <li class="core"><span class="dot core"></span>Point cloud processing</li>
+        </ul>
+      </div>
+      <div class="stack-col">
+        <div class="stack-cat mono">real-time &amp; 3d</div>
+        <ul>
+          <li class="core"><span class="dot core"></span>Unreal Engine</li>
+          <li><span class="dot"></span>Unity</li>
+          <li><span class="dot"></span>Blender</li>
+          <li><span class="dot"></span>Cinema 4D</li>
+          <li><span class="dot"></span>Houdini</li>
+          <li><span class="dot"></span>TouchDesigner</li>
+        </ul>
+      </div>
+      <div class="stack-col">
+        <div class="stack-cat mono">code &amp; shaders</div>
+        <ul>
+          <li class="core"><span class="dot core"></span>GLSL / HLSL</li>
+          <li><span class="dot"></span>Python</li>
+          <li><span class="dot"></span>JavaScript / React / Node</li>
+          <li><span class="dot"></span>C#</li>
+          <li><span class="dot"></span>Processing / p5.js</li>
+        </ul>
+      </div>
+      <div class="stack-col">
+        <div class="stack-cat mono">design &amp; generative</div>
+        <ul>
+          <li class="core"><span class="dot core"></span>Figma</li>
+          <li class="core"><span class="dot core"></span>ComfyUI</li>
+          <li><span class="dot"></span>Adobe CC</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-cta">let's <a href="mailto:hello@vasilikihadzikosta.com">connect</a></div>
+    <div class="footer-bottom">
+      <div>© 2026 vasiliki hadzikosta. all rights reserved.</div>
+      <div class="socials">
+        <a href="#">linkedin</a>
+        <a href="#">instagram</a>
+        <a href="#">pinterest</a>
+      </div>
+    </div>
+  </footer>
+
+<script type="module">
+  import * as THREE from './js/three.module.js';
+
+  // ---------- AMBIENT BACKGROUND: drifting scan dust ----------
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const bgCanvas = document.getElementById('bgParticles');
+  const bgCtx = bgCanvas.getContext('2d');
+  let bgW, bgH, bgDust = [];
+  let mouseX = 0, mouseY = 0, parX = 0, parY = 0;
+  let pointerPX = -9999, pointerPY = -9999;   // actual pixel position of cursor
+  let pointerActive = false;
+  let ripples = [];                            // click shockwaves
+
+  function sizeBg(){
+    bgW = bgCanvas.width = window.innerWidth;
+    bgH = bgCanvas.height = window.innerHeight;
+  }
+  function seedDust(){
+    const count = window.innerWidth < 720 ? 44 : 90;
+    bgDust = Array.from({length: count}, () => {
+      const x = Math.random() * bgW;
+      const y = Math.random() * bgH;
+      return {
+        x, y,
+        homeX: x, homeY: y,       // resting position to spring back toward
+        ox: 0, oy: 0,             // current displacement from home (for spring physics)
+        vx2: 0, vy2: 0,           // interaction velocity
+        r: Math.random() * 1.4 + 0.4,
+        vy: Math.random() * 0.18 + 0.04,
+        vx: (Math.random() - 0.5) * 0.06,
+        depth: Math.random() * 0.6 + 0.4,
+        hue: Math.random() > 0.82 ? 'accent' : 'ash',
+        alpha: Math.random() * 0.35 + 0.12
+      };
+    });
+  }
+  sizeBg();
+  seedDust();
+  window.addEventListener('resize', () => { sizeBg(); });
+
+  window.addEventListener('mousemove', (e) => {
+    mouseX = (e.clientX / window.innerWidth - 0.5);
+    mouseY = (e.clientY / window.innerHeight - 0.5);
+    pointerPX = e.clientX;
+    pointerPY = e.clientY;
+    pointerActive = true;
+  });
+  window.addEventListener('mouseleave', () => { pointerActive = false; pointerPX = -9999; pointerPY = -9999; });
+  window.addEventListener('mousedown', (e) => {
+    ripples.push({ x: e.clientX, y: e.clientY, r: 0, life: 1 });
+    if(ripples.length > 6) ripples.shift();
+  });
+  window.addEventListener('touchmove', (e) => {
+    if(!e.touches[0]) return;
+    pointerPX = e.touches[0].clientX;
+    pointerPY = e.touches[0].clientY;
+    pointerActive = true;
+  }, { passive:true });
+  window.addEventListener('touchend', () => { pointerActive = false; });
+
+  let particleFG = '239,234,226';
+  let particleAccent = '255,45,85';
+  function hexToRgbStr(hex){
+    hex = hex.replace('#','').trim();
+    if(hex.length === 3) hex = hex.split('').map(c => c+c).join('');
+    const r = parseInt(hex.substring(0,2),16);
+    const g = parseInt(hex.substring(2,4),16);
+    const b = parseInt(hex.substring(4,6),16);
+    return `${r},${g},${b}`;
+  }
+  function updateParticleColors(){
+    const cs = getComputedStyle(document.documentElement);
+    particleFG = hexToRgbStr(cs.getPropertyValue('--fg'));
+    particleAccent = hexToRgbStr(cs.getPropertyValue('--accent'));
+  }
+
+  function drawBg(){
+    bgCtx.clearRect(0, 0, bgW, bgH);
+    parX += (mouseX - parX) * 0.04;
+    parY += (mouseY - parY) * 0.04;
+
+    // advance ripples
+    for(const rp of ripples){
+      rp.r += 14;
+      rp.life -= 0.018;
+    }
+    ripples = ripples.filter(rp => rp.life > 0);
+
+    const REPEL = 120;          // cursor influence radius
+    const LINK = 150;           // distance to draw a constellation line to the cursor
+    const nearPointer = [];
+
+    for(const d of bgDust){
+      // base drift
+      d.homeY -= d.vy;
+      d.homeX += d.vx;
+      if(d.homeY < -4){ d.homeY = bgH + 4; d.homeX = Math.random() * bgW; }
+      if(d.homeX < -4) d.homeX = bgW + 4;
+      if(d.homeX > bgW + 4) d.homeX = -4;
+
+      // cursor repulsion
+      const px = d.homeX + d.ox;
+      const py = d.homeY + d.oy;
+      if(pointerActive){
+        const dx = px - pointerPX;
+        const dy = py - pointerPY;
+        const dist = Math.hypot(dx, dy);
+        if(dist < REPEL && dist > 0.01){
+          const force = (1 - dist / REPEL);
+          d.vx2 += (dx / dist) * force * 1.6;
+          d.vy2 += (dy / dist) * force * 1.6;
+        }
+        if(dist < LINK) nearPointer.push({ x: px, y: py, dist });
+      }
+
+      // ripple shove
+      for(const rp of ripples){
+        const dx = px - rp.x;
+        const dy = py - rp.y;
+        const dist = Math.hypot(dx, dy);
+        const band = Math.abs(dist - rp.r);
+        if(band < 40 && dist > 0.01){
+          const force = (1 - band / 40) * rp.life * 2.4;
+          d.vx2 += (dx / dist) * force;
+          d.vy2 += (dy / dist) * force;
+        }
+      }
+
+      // spring back toward home + damping
+      d.vx2 += -d.ox * 0.012;
+      d.vy2 += -d.oy * 0.012;
+      d.vx2 *= 0.88;
+      d.vy2 *= 0.88;
+      d.ox += d.vx2;
+      d.oy += d.vy2;
+
+      const ax = parX * 22 * d.depth;
+      const ay = parY * 14 * d.depth;
+      const fx = d.homeX + d.ox + ax;
+      const fy = d.homeY + d.oy + ay;
+      d.x = fx; d.y = fy;
+
+      const disp = Math.hypot(d.ox, d.oy);
+      const lit = Math.min(disp / 40, 1);          // particles glow when disturbed
+      bgCtx.beginPath();
+      bgCtx.arc(fx, fy, d.r + lit * 0.8, 0, Math.PI * 2);
+      const useAccent = d.hue === 'accent' || lit > 0.35;
+      bgCtx.fillStyle = useAccent
+        ? `rgba(${particleAccent},${Math.min(d.alpha + lit * 0.5, 0.95)})`
+        : `rgba(${particleFG},${d.alpha * 0.5})`;
+      bgCtx.fill();
+    }
+
+    // constellation: link nearby particles to the cursor
+    if(pointerActive && nearPointer.length){
+      for(const p of nearPointer){
+        const a = (1 - p.dist / LINK) * 0.5;
+        bgCtx.beginPath();
+        bgCtx.moveTo(p.x, p.y);
+        bgCtx.lineTo(pointerPX, pointerPY);
+        bgCtx.strokeStyle = `rgba(${particleAccent},${a})`;
+        bgCtx.lineWidth = 0.6;
+        bgCtx.stroke();
+      }
+      // link near-pointer particles to each other for a web effect
+      for(let i = 0; i < nearPointer.length; i++){
+        for(let j = i + 1; j < nearPointer.length; j++){
+          const dx = nearPointer[i].x - nearPointer[j].x;
+          const dy = nearPointer[i].y - nearPointer[j].y;
+          const dd = Math.hypot(dx, dy);
+          if(dd < 70){
+            bgCtx.beginPath();
+            bgCtx.moveTo(nearPointer[i].x, nearPointer[i].y);
+            bgCtx.lineTo(nearPointer[j].x, nearPointer[j].y);
+            bgCtx.strokeStyle = `rgba(${particleFG},${(1 - dd / 70) * 0.18})`;
+            bgCtx.lineWidth = 0.5;
+            bgCtx.stroke();
+          }
+        }
+      }
+    }
+  }
+
+  if(reducedMotion){
+    drawBg(); // single static frame, no loop
+  } else {
+    (function bgLoop(){
+      drawBg();
+      requestAnimationFrame(bgLoop);
+    })();
+  }
+
+  // ---------- LOADER: point-cloud reconstruction of name ----------
+  const canvas = document.getElementById('cloudCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+
+  // build target points by rendering text to an offscreen canvas and sampling pixels
+  const off = document.createElement('canvas');
+  off.width = W; off.height = H;
+  const octx = off.getContext('2d');
+  octx.fillStyle = '#fff';
+  octx.font = '700 64px Big Shoulders Display, sans-serif';
+  octx.textAlign = 'center';
+  octx.textBaseline = 'middle';
+  octx.fillText('VH', W/2, H/2);
+
+  const imgData = octx.getImageData(0,0,W,H).data;
+  const targets = [];
+  const STEP = 4;
+  for(let y=0; y<H; y+=STEP){
+    for(let x=0; x<W; x+=STEP){
+      const alpha = imgData[(y*W+x)*4+3];
+      if(alpha > 128){ targets.push({x, y}); }
+    }
+  }
+
+  const particles = targets.map(t => ({
+    x: Math.random()*W,
+    y: Math.random()*H,
+    tx: t.x,
+    ty: t.y,
+    size: Math.random()*1.6 + 0.6
+  }));
+
+  let progress = 0;
+  const duration = 1600; // ms
+  let startTime = null;
+
+  function drawFrame(p){
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle = '#FF2D55';
+    for(const pt of particles){
+      const cx = pt.x + (pt.tx - pt.x) * p;
+      const cy = pt.y + (pt.ty - pt.y) * p;
+      ctx.beginPath();
+      ctx.arc(cx, cy, pt.size, 0, Math.PI*2);
+      ctx.fill();
+    }
+  }
+
+  function tick(now){
+    if(!startTime) startTime = now;
+    const elapsed = now - startTime;
+    progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1-progress, 3);
+    drawFrame(eased);
+
+    const pctEl = document.getElementById('loaderPct');
+    pctEl.textContent = Math.round(eased * particles.length).toLocaleString();
+
+    if(progress < 1){
+      requestAnimationFrame(tick);
+    } else {
+      document.getElementById('loaderLabel').textContent = particles.length.toLocaleString() + ' points — locked';
+      setTimeout(() => {
+        document.getElementById('loader').classList.add('hide');
+      }, 350);
+    }
+  }
+  requestAnimationFrame(tick);
+
+  // ---------- THEME TOGGLE: light / dark, persisted ----------
+  (function(){
+    const root = document.documentElement;
+    const toggle = document.getElementById('themeToggle');
+    const stored = localStorage.getItem('vh-theme');
+    const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+    const initial = stored || (prefersLight ? 'light' : 'dark');
+    if(initial === 'light') root.setAttribute('data-theme', 'light');
+    updateParticleColors();
+
+    toggle.addEventListener('click', () => {
+      const isLight = root.getAttribute('data-theme') === 'light';
+      if(isLight){
+        root.removeAttribute('data-theme');
+        localStorage.setItem('vh-theme', 'dark');
+      } else {
+        root.setAttribute('data-theme', 'light');
+        localStorage.setItem('vh-theme', 'light');
+      }
+      updateParticleColors();
+    });
+  })();
+
+  // ---------- CUSTOM CURSOR: trailing ring + dot, grows over interactive elements ----------
+  (function(){
+    const fine = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+    if(!fine || reducedMotion) return;
+    const ring = document.getElementById('cursorRing');
+    const dot = document.getElementById('cursorDot');
+    let rx = 0, ry = 0, tx = 0, ty = 0;
+    let started = false;
+
+    window.addEventListener('mousemove', (e) => {
+      tx = e.clientX; ty = e.clientY;
+      dot.style.transform = `translate(${tx}px, ${ty}px)`;
+      if(!started){ started = true; document.body.classList.add('cursor-ready'); rx = tx; ry = ty; }
+    });
+    (function ringLoop(){
+      rx += (tx - rx) * 0.18;
+      ry += (ty - ry) * 0.18;
+      ring.style.transform = `translate(${rx}px, ${ry}px)`;
+      requestAnimationFrame(ringLoop);
+    })();
+
+    const hotSel = 'a, button, .project-card, .motion-card, .pin, .filter-pill, .theme-toggle, .skill, .lede';
+    document.addEventListener('mouseover', (e) => {
+      if(e.target.closest(hotSel)) document.body.classList.add('cursor-hot');
+    });
+    document.addEventListener('mouseout', (e) => {
+      if(e.target.closest(hotSel)) document.body.classList.remove('cursor-hot');
+    });
+  })();
+
+  // ---------- MAGNETIC NAME: split into letters, repel from cursor ----------
+  (function(){
+    if(reducedMotion) return;
+    const name = document.getElementById('heroName');
+    if(!name) return;
+    name.querySelectorAll('span[data-line]').forEach(line => {
+      const text = line.dataset.line;
+      line.innerHTML = text.split('').map(c => `<span class="ltr">${c}</span>`).join('');
+    });
+    const letters = [...name.querySelectorAll('.ltr')];
+
+    window.addEventListener('mousemove', (e) => {
+      for(const l of letters){
+        const r = l.getBoundingClientRect();
+        const cx = r.left + r.width / 2;
+        const cy = r.top + r.height / 2;
+        const dx = e.clientX - cx;
+        const dy = e.clientY - cy;
+        const dist = Math.hypot(dx, dy);
+        const RANGE = 110;
+        if(dist < RANGE){
+          const f = (1 - dist / RANGE);
+          l.style.transform = `translate(${-dx * f * 0.4}px, ${-dy * f * 0.4}px)`;
+        } else {
+          l.style.transform = '';
+        }
+      }
+    });
+  })();
+
+  // ---------- HERO LIVE STATUS: rotates, and shows local time where she is ----------
+  (function(){
+    const el = document.getElementById('statusText');
+    if(!el) return;
+    const lines = [
+      'building something strange',
+      'turning ruins into point clouds',
+      'open to new work',
+      'probably in a gallery right now'
+    ];
+    let i = 0;
+    setInterval(() => {
+      i = (i + 1) % lines.length;
+      el.style.opacity = '0';
+      setTimeout(() => { el.textContent = lines[i]; el.style.opacity = '1'; }, 300);
+    }, 3400);
+    el.style.transition = 'opacity 0.3s ease';
+  })();
+  function scrambleReveal(el, opts = {}){
+    if(reducedMotion) return; // leave static text for reduced-motion users
+    const finalText = el.dataset.text || el.textContent;
+    el.dataset.text = finalText;
+    const chars = finalText.split('');
+    el.innerHTML = chars.map(c => c === ' ' ? ' ' : `<span class="sc-ch">${c}</span>`).join('');
+    const spans = el.querySelectorAll('.sc-ch');
+    const cycles = opts.cycles || 9;
+    const stepMs = opts.stepMs || 28;
+    const stagger = opts.stagger ?? 1.1;
+
+    spans.forEach((span, i) => {
+      const real = span.textContent;
+      const totalSteps = Math.round(cycles + i * stagger);
+      let n = 0;
+      const id = setInterval(() => {
+        if(n < totalSteps - 4){
+          span.textContent = SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
+        } else {
+          span.textContent = real;
+          if(n >= totalSteps) clearInterval(id);
+        }
+        n++;
+      }, stepMs);
+    });
+  }
+
+  // section headings decode in as they scroll into view (hero name itself stays a simple, unscrambled fade-in)
+  if('IntersectionObserver' in window){
+    const headObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting && !entry.target.dataset.scrambled){
+          entry.target.dataset.scrambled = '1';
+          scrambleReveal(entry.target, { cycles:6, stepMs:24, stagger:1.3 });
+          headObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold:0.5 });
+    document.querySelectorAll('.section-head h2').forEach(h => headObserver.observe(h));
+  }
+
+  // content reveal: fade-up project cards, motion cards, skills, and key blocks as they enter
+  if('IntersectionObserver' in window && !reducedMotion){
+    const revealTargets = document.querySelectorAll(
+      '.project-card, .motion-card, .skill, .about-grid > *, .lab-grid > *, .stack-col'
+    );
+    revealTargets.forEach(el => el.classList.add('reveal'));
+    const revObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry, idx) => {
+        if(entry.isIntersecting){
+          const el = entry.target;
+          // stagger within the same row/grid by DOM order among visible siblings
+          const sibs = [...el.parentElement.children].filter(c => c.classList.contains('reveal'));
+          const pos = sibs.indexOf(el);
+          el.style.transitionDelay = Math.min(pos, 8) * 60 + 'ms';
+          el.classList.add('in');
+          revObserver.unobserve(el);
+        }
+      });
+    }, { threshold:0.12, rootMargin:'0px 0px -40px 0px' });
+    revealTargets.forEach(el => revObserver.observe(el));
+  }
+
+  // ---------- ABOUT: smooth Three.js particle blob behind the lede text ----------
+  (function(){
+    const blobCanvas = document.getElementById('aboutBlob');
+    if(!blobCanvas) return;
+
+    if(typeof THREE === 'undefined'){
+      const fallbackCtx = blobCanvas.getContext('2d');
+      fallbackCtx.fillStyle = 'rgba(255,45,85,0.35)';
+      for(let i = 0; i < 180; i++){
+        const a = Math.random() * Math.PI * 2;
+        const r = Math.sqrt(Math.random()) * 160;
+        fallbackCtx.beginPath();
+        fallbackCtx.arc(240 + Math.cos(a) * r, 240 + Math.sin(a) * r, Math.random() * 1.6 + 0.5, 0, Math.PI * 2);
+        fallbackCtx.fill();
+      }
+      return;
+    }
+
+    const renderer = new THREE.WebGLRenderer({ canvas: blobCanvas, alpha:true, antialias:true });
+    blobCanvas.dataset.renderer = 'threejs';
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setSize(480, 480, false);
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
+    camera.position.z = 8.2;
+
+    const count = reducedMotion ? 220 : 420;
+    const positions = new Float32Array(count * 3);
+    const colors = new Float32Array(count * 3);
+    const seeds = [];
+    const fg = new THREE.Color(getComputedStyle(document.documentElement).getPropertyValue('--fg').trim());
+    const accent = new THREE.Color(getComputedStyle(document.documentElement).getPropertyValue('--accent').trim());
+
+    for(let i = 0; i < count; i++){
+      const angle = Math.random() * Math.PI * 2;
+      const radius = Math.pow(Math.random(), 0.62) * 2.75;
+      const height = (Math.random() - 0.5) * 1.65;
+      const wobble = 0.72 + Math.sin(angle * 3.0) * 0.12 + Math.sin(angle * 5.0) * 0.08;
+      const x = Math.cos(angle) * radius * wobble;
+      const y = Math.sin(angle) * radius * (0.82 + Math.cos(angle * 2.0) * 0.08);
+      const z = height + Math.sin(angle * 4.0) * 0.34;
+
+      positions[i * 3] = x;
+      positions[i * 3 + 1] = y;
+      positions[i * 3 + 2] = z;
+      seeds.push({ x, y, z, phase:Math.random() * Math.PI * 2, lift:Math.random() * 0.18 + 0.04 });
+
+      const c = Math.random() > 0.76 ? accent : fg;
+      colors[i * 3] = c.r;
+      colors[i * 3 + 1] = c.g;
+      colors[i * 3 + 2] = c.b;
+    }
+
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+    const material = new THREE.PointsMaterial({
+      size:0.046,
+      vertexColors:true,
+      transparent:true,
+      opacity:0.72,
+      depthWrite:false,
+      blending:THREE.AdditiveBlending
+    });
+
+    const points = new THREE.Points(geometry, material);
+    scene.add(points);
+
+    const halo = new THREE.Mesh(
+      new THREE.TorusKnotGeometry(1.9, 0.015, 120, 8, 2, 3),
+      new THREE.MeshBasicMaterial({ color:accent, transparent:true, opacity:0.18 })
+    );
+    scene.add(halo);
+
+    const pointer = { x:0, y:0, active:false };
+    window.addEventListener('mousemove', (e) => {
+      const rect = blobCanvas.getBoundingClientRect();
+      pointer.x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+      pointer.y = -((e.clientY - rect.top) / rect.height - 0.5) * 2;
+      pointer.active = e.clientX >= rect.left - 120 && e.clientX <= rect.right + 120 && e.clientY >= rect.top - 120 && e.clientY <= rect.bottom + 120;
+    });
+    window.addEventListener('mouseleave', () => { pointer.active = false; });
+
+    const pos = geometry.attributes.position;
+    function renderAboutBlob(t){
+      const time = (t || 0) * 0.001;
+      for(let i = 0; i < count; i++){
+        const s = seeds[i];
+        const dx = s.x - pointer.x * 2.2;
+        const dy = s.y - pointer.y * 2.2;
+        const dist = Math.hypot(dx, dy);
+        const pull = pointer.active ? Math.max(0, 1 - dist / 2.2) : 0;
+        const breathe = reducedMotion ? 0 : Math.sin(time * 0.65 + s.phase) * s.lift;
+
+        pos.array[i * 3] = s.x + dx * pull * 0.13;
+        pos.array[i * 3 + 1] = s.y + dy * pull * 0.13 + breathe;
+        pos.array[i * 3 + 2] = s.z + pull * 0.8 + (reducedMotion ? 0 : Math.cos(time * 0.48 + s.phase) * s.lift);
+      }
+      pos.needsUpdate = true;
+
+      points.rotation.y += ((pointer.active ? pointer.x * 0.18 : 0.08) - points.rotation.y) * 0.035;
+      points.rotation.x += ((pointer.active ? -pointer.y * 0.12 : -0.06) - points.rotation.x) * 0.035;
+      if(!reducedMotion) points.rotation.z = Math.sin(time * 0.22) * 0.08;
+      halo.rotation.x = points.rotation.x + time * 0.08;
+      halo.rotation.y = points.rotation.y + time * 0.12;
+      halo.scale.setScalar(1 + (pointer.active ? 0.08 : 0));
+
+      renderer.render(scene, camera);
+      if(!reducedMotion) requestAnimationFrame(renderAboutBlob);
+    }
+
+    renderAboutBlob(0);
+  })();
+
+  // ---------- WORLD CLOCK STRIP ----------
+  function formatTime(offsetHours){
+    const now = new Date();
+    const utc = now.getTime() + (now.getTimezoneOffset()*60000);
+    const target = new Date(utc + (3600000*offsetHours));
+    let h = target.getHours().toString().padStart(2,'0');
+    let m = target.getMinutes().toString().padStart(2,'0');
+    return h+':'+m;
+  }
+  function updateClocks(){
+    document.getElementById('t-par').textContent = formatTime(2);    // CEST approx
+    document.getElementById('t-angkor').textContent = formatTime(7); // Cambodia
+    document.getElementById('t-mosul').textContent = formatTime(3);  // Iraq
+    document.getElementById('t-la').textContent = formatTime(-7);    // PDT approx
+  }
+  updateClocks();
+  setInterval(updateClocks, 1000*30);
+
+  // ---------- PROJECT MODAL ----------
+  const projectModal = document.getElementById('projectModal');
+  const modalContent = document.getElementById('modalContent');
+  const modalClose = document.getElementById('modalClose');
+
+  function openModal(id){
+    const tmpl = document.getElementById('tmpl-' + id);
+    if(!tmpl) return;
+    modalContent.innerHTML = '';
+    modalContent.appendChild(tmpl.content.cloneNode(true));
+    projectModal.classList.add('open');
+    document.body.classList.add('modal-open');
+    modalClose.focus();
+  }
+  function closeModal(){
+    projectModal.classList.remove('open');
+    document.body.classList.remove('modal-open');
+    modalContent.innerHTML = ''; // clears embedded video iframes so they stop playing
+  }
+
+  document.querySelectorAll('.project-card').forEach(card => {
+    card.addEventListener('click', () => openModal(card.dataset.modal));
+  });
+  modalClose.addEventListener('click', closeModal);
+  projectModal.addEventListener('click', (e) => { if(e.target === projectModal) closeModal(); });
+  document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeModal(); });
+
+  // ---------- WORK FILTER PILLS ----------
+  const filterRow = document.getElementById('filterRow');
+  const projectGrid = document.getElementById('projectGrid');
+  filterRow.querySelectorAll('.filter-pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterRow.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const f = btn.dataset.filter;
+      projectGrid.querySelectorAll('.project-card').forEach(card => {
+        const show = (f === 'all' || card.dataset.category === f);
+        card.style.display = show ? '' : 'none';
+        if(show) card.classList.add('in'); // never leave a re-shown card stuck mid-reveal
+      });
+    });
+  });
+
+  // ---------- THE WALL: posters / fun stuff ----------
+  // To add a piece: drop a new object in this array.
+  //   type     -> "image" or "video"
+  //   src      -> image path, or video path for type "video" (e.g. "images/wall/clip.mp4")
+  //   poster   -> (video only, optional) thumbnail image shown before play
+  //   caption  -> short line, e.g. "Birthday poster — for Mira, 2026"
+  //   tall     -> (image only, optional) set true for long/scrolling pieces — shows a top-cropped
+  //               thumbnail and opens the full image in a lightbox instead of just cropping it
+  // Leave the array entry out (or set src to null) to keep an empty pinned slot instead.
+  const wallPieces = [
+    { type: "video", src: "images/wall/tifanny.mp4", caption: "Tiffany — motion study" },
+    { type: "video", src: "images/wall/DAVID_MALLET.mp4", caption: "David Mallet — editorial motion" },
+    { type: "video", src: "images/wall/alice_olivia.mp4", caption: "Alice + Olivia — playful fashion clip" },
+    { type: "video", src: "images/wall/neutral-lorrai-knit-silk-cardigan.mp4", caption: "Neutral Lorrai Knit Silk Cardigan" },
+    { type: "video", src: "images/wall/fair-warning.mp4", caption: "Fair Warning — short-form experiment" },
+    { type: "image", src: "images/wall/roblox.webp", caption: "Roblox — avatar garment concept" },
+    { type: "image", src: "images/wall/khaite-white-edit.jpg", caption: "Khaite — The White Edit newsletter edit", tall: true },
+    { type: "image", src: "images/wall/riso_2.png", caption: "Riso map — coordinate print" },
+    { type: "image", src: "images/wall/5T.png", caption: "5T — interior visualization", wide: true },
+  ];
+
+  const MIN_SLOTS = 9; // keeps the wall looking full even with zero pieces yet
+  const wallGrid = document.getElementById('wallGrid');
+  const wallCount = document.getElementById('wallCount');
+  const rotations = [-3, 2, -1.5, 3, -2.5, 1.5, -1, 2.5];
+
+  function randRot(){
+    return (Math.random() * 7 - 3.5).toFixed(1);
+  }
+
+  function makePin(piece, rot){
+    const el = document.createElement('div');
+    el.style.setProperty('--r', rot + 'deg');
+    el.setAttribute('draggable', 'true');
+
+    if(piece && piece.src){
+      el.className = 'pin' + (piece.tall ? ' tall' : '') + (piece.wide ? ' wide' : '');
+      if(piece.type === 'video'){
+        el.classList.add('is-video');
+        el.innerHTML = `
+          <video class="pin-img" src="${piece.src}" muted loop playsinline preload="metadata"></video>
+          <span class="pin-play">▶</span>
+          <div class="pin-cap mono">${piece.caption || ''}</div>
+        `;
+        const preview = el.querySelector('video');
+        el.addEventListener('mouseenter', () => preview.play().catch(() => {}));
+        el.addEventListener('mouseleave', () => { preview.pause(); preview.currentTime = 0; });
+      } else {
+        el.innerHTML = `
+          <img class="pin-img" src="${piece.src}" alt="${piece.caption || 'poster'}" loading="lazy">
+          ${piece.tall ? '<span class="pin-expand mono">view full ↗</span>' : ''}
+          <div class="pin-cap mono">${piece.caption || ''}</div>
+        `;
+      }
+      el.addEventListener('click', (e) => {
+        // don't trigger lightbox mid-drag
+        if(el.classList.contains('dragging')) return;
+        openWallLightbox(piece);
+      });
+    } else {
+      el.className = 'pin empty';
+      el.innerHTML = `<div class="pin-plus">+ send me<br>a poster</div>`;
+    }
+    return el;
+  }
+
+  const total = Math.max(wallPieces.length, MIN_SLOTS);
+  for(let i = 0; i < total; i++){
+    wallGrid.appendChild(makePin(wallPieces[i], rotations[i % rotations.length]));
+  }
+  wallCount.textContent = (wallPieces.length || '0') + ' PIECES';
+
+  // ---- lightbox for full-size view (images + video) ----
+  const wallLightbox = document.getElementById('wallLightbox');
+  const wallLightboxContent = document.getElementById('wallLightboxContent');
+  const wallLightboxClose = document.getElementById('wallLightboxClose');
+
+  function openWallLightbox(piece){
+    wallLightboxContent.innerHTML = '';
+    if(piece.type === 'video'){
+      const v = document.createElement('video');
+      v.src = piece.src;
+      v.controls = true;
+      v.autoplay = true;
+      v.playsInline = true;
+      wallLightboxContent.appendChild(v);
+    } else {
+      const img = document.createElement('img');
+      img.src = piece.src;
+      img.alt = piece.caption || '';
+      wallLightboxContent.appendChild(img);
+    }
+    if(piece.caption){
+      const cap = document.createElement('div');
+      cap.className = 'lightbox-cap mono';
+      cap.textContent = piece.caption;
+      wallLightboxContent.appendChild(cap);
+    }
+    wallLightbox.classList.add('open');
+    document.body.classList.add('modal-open');
+  }
+  function closeWallLightbox(){
+    wallLightbox.classList.remove('open');
+    document.body.classList.remove('modal-open');
+    wallLightboxContent.innerHTML = ''; // stops any playing video
+  }
+  wallLightboxClose.addEventListener('click', closeWallLightbox);
+  wallLightbox.addEventListener('click', (e) => { if(e.target === wallLightbox) closeWallLightbox(); });
+  document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeWallLightbox(); });
+
+  // ---- drag to reorder ----
+  let draggedEl = null;
+
+  wallGrid.addEventListener('dragstart', (e) => {
+    const pin = e.target.closest('.pin');
+    if(!pin) return;
+    draggedEl = pin;
+    pin.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+  });
+
+  wallGrid.addEventListener('dragend', (e) => {
+    const pin = e.target.closest('.pin');
+    if(pin) pin.classList.remove('dragging');
+    wallGrid.querySelectorAll('.pin.drag-over').forEach(p => p.classList.remove('drag-over'));
+    draggedEl = null;
+  });
+
+  wallGrid.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    const target = e.target.closest('.pin');
+    if(!target || target === draggedEl) return;
+    wallGrid.querySelectorAll('.pin.drag-over').forEach(p => p.classList.remove('drag-over'));
+    target.classList.add('drag-over');
+  });
+
+  wallGrid.addEventListener('drop', (e) => {
+    e.preventDefault();
+    const target = e.target.closest('.pin');
+    if(!target || !draggedEl || target === draggedEl) return;
+    target.classList.remove('drag-over');
+
+    const children = Array.from(wallGrid.children);
+    const draggedIdx = children.indexOf(draggedEl);
+    const targetIdx = children.indexOf(target);
+
+    if(draggedIdx < targetIdx){
+      target.after(draggedEl);
+    } else {
+      target.before(draggedEl);
+    }
+  });
+
+  // ---- shuffle button ----
+  const shuffleBtn = document.getElementById('shuffleBtn');
+  shuffleBtn.addEventListener('click', () => {
+    const pins = Array.from(wallGrid.children);
+    pins.forEach(p => p.classList.add('shuffle-out'));
+
+    setTimeout(() => {
+      // Fisher–Yates shuffle, then reassign fresh tilts
+      for(let i = pins.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [pins[i], pins[j]] = [pins[j], pins[i]];
+      }
+      pins.forEach((p, i) => {
+        p.style.setProperty('--r', randRot() + 'deg');
+        wallGrid.appendChild(p);
+        p.classList.remove('shuffle-out');
+        p.classList.add('shuffle-in');
+        p.style.transitionDelay = (i * 35) + 'ms';
+        requestAnimationFrame(() => {
+          p.classList.remove('shuffle-in');
+        });
+      });
+      setTimeout(() => pins.forEach(p => { p.style.transitionDelay = ''; }), 600);
+    }, 280);
+  });
+
+  // ---------- MOTION DESIGN GRID ----------
+  // Add new clips here — that's the only edit needed; grid, filters and count update themselves.
+  const motionPieces = [
+    {
+      title: "BILT Rewards — Receipt",
+      src: "images/bilt/bilt-receipt.mp4",
+      poster: "images/bilt/bilt-receipt-poster.jpg",
+      tags: ["after effects"],
+      caption: "BILT Rewards receipt print, looped for Reels & Stories"
+    },
+    // { title: "Clip name", src: "images/motion/clip.mp4", poster: "images/motion/clip.jpg", tags: ["cinema 4d"], caption: "One line about it" },
+  ];
+
+  const MOTION_MIN_SLOTS = 3;
+  const motionGrid = document.getElementById('motionGrid');
+  const motionCount = document.getElementById('motionCount');
+  const motionFilterRow = document.getElementById('motionFilterRow');
+
+  function makeMotionCard(piece){
+    const el = document.createElement('div');
+    if(!piece){
+      el.className = 'motion-card empty';
+      el.innerHTML = `<div class="motion-plus">+ drop in<br>a clip</div>`;
+      return el;
+    }
+    el.className = 'motion-card';
+    el.dataset.tags = (piece.tags || []).join(',');
+    el.innerHTML = `
+      <div class="motion-thumb">
+        <img src="${piece.poster}" alt="${piece.caption || piece.title || 'motion clip'}" loading="lazy">
+        <video src="${piece.src}" muted loop playsinline preload="none"></video>
+        <span class="motion-play">&#9658;</span>
+      </div>
+      <div class="motion-meta">
+        <div class="motion-title">${piece.title || ''}</div>
+        <div class="motion-tags">${(piece.tags || []).map(t => `<span class="motion-tag mono">${t}</span>`).join('')}</div>
+      </div>
+    `;
+    const video = el.querySelector('video');
+    el.addEventListener('mouseenter', () => { video.currentTime = 0; video.play().catch(() => {}); });
+    el.addEventListener('mouseleave', () => { video.pause(); });
+    el.addEventListener('click', () => openWallLightbox(piece));
+    return el;
+  }
+
+  const motionTotal = Math.max(motionPieces.length, MOTION_MIN_SLOTS);
+  for(let i = 0; i < motionTotal; i++){
+    motionGrid.appendChild(makeMotionCard(motionPieces[i]));
+  }
+  motionCount.textContent = (motionPieces.length || '0') + ' CLIPS';
+
+  // filter pills, auto-built from whatever tags exist on the pieces above
+  const motionTags = [...new Set(motionPieces.flatMap(p => p.tags || []))];
+  motionTags.forEach(tag => {
+    const btn = document.createElement('button');
+    btn.className = 'filter-pill';
+    btn.dataset.filter = tag;
+    btn.textContent = tag;
+    motionFilterRow.appendChild(btn);
+  });
+  motionFilterRow.addEventListener('click', (e) => {
+    const btn = e.target.closest('.filter-pill');
+    if(!btn) return;
+    motionFilterRow.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const filter = btn.dataset.filter;
+    motionGrid.querySelectorAll('.motion-card').forEach(card => {
+      if(card.classList.contains('empty')) return;
+      const tags = card.dataset.tags.split(',');
+      const hide = filter !== 'all' && !tags.includes(filter);
+      card.classList.toggle('is-hidden', hide);
+      if(!hide) card.classList.add('in');
+    });
+  });
+</script>
+
+</body>
+</html>
