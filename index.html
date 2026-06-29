@@ -595,8 +595,8 @@
   .bilt-slices img{ width:100%; height:100%; object-fit:cover; display:block; }
   .wide-hero{ margin-top:18px; border:1px solid var(--hair); background:var(--panel); overflow:hidden; }
   .wide-hero img{ width:100%; display:block; object-fit:contain; }
-  .wide-hero.carousel-crop{ aspect-ratio:1/1; }
-  .wide-hero.carousel-crop img{ height:100%; object-fit:cover; object-position:100% 50%; }
+  .wide-hero.carousel-crop{ max-width:min(100%,760px); }
+  .wide-hero.carousel-crop img{ width:100%; height:auto; object-fit:contain; }
   .hero-fill{ border:1px solid var(--hair); background:var(--panel); overflow:hidden; }
   .hero-fill img{ width:100%; height:min(72vh,760px); object-fit:cover; display:block; }
   .hero-fill.contain img{ object-fit:contain; background:var(--void); }
@@ -614,7 +614,9 @@
   .editorial-grid.mixed{ grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); }
   .editorial-pair figure,.editorial-grid figure,.poster-grid figure,.scroll-strip figure{ border:1px solid var(--hair); background:var(--panel); padding:8px; }
   .editorial-pair img,.editorial-grid img,.poster-grid img,.scroll-strip img{ width:100%; height:100%; max-height:520px; object-fit:contain; display:block; }
-  .proto-row{ display:grid; grid-template-columns:minmax(260px,.8fr) minmax(420px,1.2fr); gap:28px; align-items:start; }
+  .proto-row{ display:grid; grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr); gap:28px; align-items:start; overflow:hidden; }
+  .proto-media figure{ border:1px solid var(--hair); background:var(--panel); padding:8px; overflow:hidden; }
+  .proto-media img{ width:100%; max-height:560px; object-fit:contain; display:block; }
   .proto-copy h3{ font-family:'Big Shoulders Display',sans-serif; font-size:clamp(30px,5vw,58px); line-height:.95; text-transform:uppercase; margin:14px 0 18px; }
   .poster-grid{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
   .scroll-strip{ display:grid; grid-template-columns:repeat(4,minmax(260px,1fr)); gap:16px; overflow-x:auto; padding-bottom:8px; }
@@ -997,27 +999,27 @@
     <div class="meta mono">experiments · shaders · generative</div>
   </div>
   <div class="lab-grid">
-    <a class="lab-card" href="https://editor.p5js.org/vashadz/sketches/PMc9yub4K" target="_blank" rel="noopener">
+    <a class="lab-card" href="https://editor.p5js.org/vashadz/full/PMc9yub4K" target="_blank" rel="noopener">
       <div class="lab-thumb ph"><span class="glyph">◈</span></div>
       <div class="lab-info"><div class="k mono">p5.js</div><h3>Autobiographical Game</h3><p>A small playable memory: code as a way of revisiting a moment.</p><span class="go mono">open sketch ↗</span></div>
     </a>
-    <a class="lab-card" href="https://editor.p5js.org/vashadz/sketches/2AIEDMYsK" target="_blank" rel="noopener">
+    <a class="lab-card" href="https://editor.p5js.org/vashadz/full/2AIEDMYsK" target="_blank" rel="noopener">
       <div class="lab-thumb ph"><span class="glyph">▦</span></div>
       <div class="lab-info"><div class="k mono">p5.js</div><h3>Filling the Grid with Rects</h3><p>A generative study in restraint: rectangles accumulate until the grid declares itself full.</p><span class="go mono">open sketch ↗</span></div>
     </a>
-    <a class="lab-card" href="https://editor.p5js.org/vashadz/sketches/YE74vKB9u" target="_blank" rel="noopener">
+    <a class="lab-card" href="https://editor.p5js.org/vashadz/full/YE74vKB9u" target="_blank" rel="noopener">
       <div class="lab-thumb ph"><span class="glyph">▧</span></div>
       <div class="lab-info"><div class="k mono">p5.js</div><h3>Exquisite Corp</h3><p>A coded exquisite-corpse drawing game: each player only ever sees the last fragment before adding their own.</p><span class="go mono">open sketch ↗</span></div>
     </a>
-    <a class="lab-card" href="https://editor.p5js.org/vashadz/sketches/3IhV64Soh" target="_blank" rel="noopener">
+    <a class="lab-card" href="https://editor.p5js.org/vashadz/full/3IhV64Soh" target="_blank" rel="noopener">
       <div class="lab-thumb ph"><span class="glyph">◑</span></div>
       <div class="lab-info"><div class="k mono">p5.js</div><h3>Draw Me Like a Modigliani</h3><p>A portrait filter built from elongation and line: faces redrawn the way Modigliani might have seen them.</p><span class="go mono">open sketch ↗</span></div>
     </a>
-    <a class="lab-card" href="https://editor.p5js.org/vashadz/sketches/4-W4vaXwj" target="_blank" rel="noopener">
+    <a class="lab-card" href="https://editor.p5js.org/vashadz/full/4-W4vaXwj" target="_blank" rel="noopener">
       <div class="lab-thumb ph"><span class="glyph">▤</span></div>
       <div class="lab-info"><div class="k mono">glsl</div><h3>Shader Procedural Road</h3><p>An endless road generated entirely in a fragment shader: no geometry, just math pretending to recede.</p><span class="go mono">open sketch ↗</span></div>
     </a>
-    <a class="lab-card" href="https://editor.p5js.org/vashadz/sketches/tu93x7bed" target="_blank" rel="noopener">
+    <a class="lab-card" href="https://editor.p5js.org/vashadz/full/tu93x7bed" target="_blank" rel="noopener">
       <div class="lab-thumb ph"><span class="glyph">▥</span></div>
       <div class="lab-info"><div class="k mono">glsl</div><h3>Shader City</h3><p>A skyline built from noise and distance fields: a city that exists only as long as the shader runs.</p><span class="go mono">open sketch ↗</span></div>
     </a>
@@ -1073,10 +1075,10 @@ const PROJECTS = [
   { id:"ratgame", cat:"personal", title:"Rat Race", tag:"unity · level design", thumb:"images/ratrace/ratrace.png", video:"images/ratrace/Rat Game_Playthrough.mp4", featured:true },
   { id:"uncertainty", cat:"product", title:"Visualizing Uncertainty", tag:"ux/ui · data visualization · collaborative", thumb:"images/visualisizing uncertainty /v4.1_a.webp" },
   { id:"data_posters", cat:"personal", title:"Data Posters", tag:"prototype 3 · poster system · art market data", thumb:"images/data-posters/Data Posters — Vasiliki Hadzikosta (Copy)_files/2.png", links:[{label:"Open sketch", url:"https://editor.p5js.org/vashadz/full/VwFBaCxM1"}] },
-  { id:"biltcard", cat:"brand", title:"BILT Card", tag:"campaign · motion · social", thumb:"images/bilt/insta-carousel.png" },
+  { id:"biltcard", cat:"brand", title:"BILT Card", tag:"campaign · motion · social", thumb:"images/bilt/bilt-hero.png" },
   { id:"glucosegoddess", cat:"product", title:"Glucose Goddess - Anti-Spike", tag:"before / after · mobile ux · health", thumb:"images/glycose_goddess/mobile section.png" },
   { id:"exa", cat:"product", title:"Exa", tag:"ai search · product screens", thumb:"images/exa/exa.png" },
-  { id:"mexican", cat:"brand", title:"Parallel Landscapes of Mexican Heritage", tag:"identity · research · mezcal", thumb:"images/mexican/παρουσίαση40.webp" },
+  { id:"mexican", cat:"brand", title:"Parallel Landscapes of Mexican Heritage", tag:"identity · research · mezcal", thumb:"images/mexican/The%20Parallel%20Landscapes%20of%20Mexican%20Heritage%20%E2%80%94%20Vasiliki%20Hadzikosta%20(Copy)_files/large%2Bgrid.jpeg" },
   { id:"ms2art", cat:"personal", title:"Transactional Aesthetics", tag:"art market · installation · critique", thumb:"images/ms2-art/list28.png" },
   { id:"disentanglement", cat:"personal", title:"Disentanglement", tag:"image series · narrative", thumb:"images/disentanglement/disentanglement.jpg" },
   { id:"motioncapture", cat:"personal", title:"Motion Capture Studies", tag:"body motion · video tests", thumb:"images/motion-capture/snap-snap.jpg" },
@@ -1519,10 +1521,7 @@ if (!isTouch && !prefersReduced){
   <div class="stage"><div class="stage-lbl mono">visual system</div><div class="media-gallery large contain"><figure class="zoomable"><img src="images/visualisizing uncertainty /v4.1_a.webp" alt="Visualizing Uncertainty interface study" loading="lazy"></figure><figure class="zoomable"><img src="images/visualisizing uncertainty /v4.1_2_3.webp" alt="Visualizing Uncertainty interaction flow" loading="lazy"></figure></div></div>
   <div class="stage">
     <div class="stage-lbl mono">interactive prototype</div>
-    <div class="liveframe">
-      <div class="bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="u mono">figma.com/proto/visualizing-uncertainty</span></div>
-      <iframe src="https://www.figma.com/proto/anFojnZPnq86RWLPeheJrw?kind=proto&node-id=190-5607&page-id=3%3A4&scaling=contain&starting-point-node-id=190%3A5607&t=pV0x793btsRoZATS-1&type=design&viewport=922%2C280%2C0.17&fuid=1420851426863510152" title="Visualizing Uncertainty Figma prototype" loading="lazy" allow="fullscreen" allowfullscreen></iframe>
-    </div>
+    <p class="mini-note">The Figma prototype is linked directly because Figma is blocking the embedded view on the public site.</p>
     <a href="https://www.figma.com/proto/anFojnZPnq86RWLPeheJrw?kind=proto&node-id=190-5607&page-id=3%3A4&scaling=contain&starting-point-node-id=190%3A5607&t=pV0x793btsRoZATS-1&type=design&viewport=922%2C280%2C0.17&fuid=1420851426863510152" target="_blank" rel="noopener" class="cta-live mono">Open prototype ↗</a>
   </div>
 </template>
@@ -1616,7 +1615,7 @@ display(widgets.interactive(update_heatmap, magnitude_threshold=magnitude_slider
 
 <!-- ===== BILT ===== -->
 <template id="tmpl-biltcard">
-<div class="modal-head"><span class="mcat mono">brand &amp; social</span><h2>BILT Card</h2><span class="mtag mono">campaign / carousel / motion</span></div><p class="mdesc">A campaign system broken out into individual social frames, rather than one long carousel strip.</p><figure class="wide-hero carousel-crop"><img src="images/bilt/insta-carousel.png" alt="BILT carousel final frame hero" loading="lazy"></figure><div class="stage"><div class="stage-lbl mono">carousel frames</div><div class="bilt-slices"><figure><img src="images/bilt/insta-carousel.png" style="object-position:0% 50%" alt="BILT carousel frame 1" loading="lazy"></figure><figure><img src="images/bilt/insta-carousel.png" style="object-position:25% 50%" alt="BILT carousel frame 2" loading="lazy"></figure><figure><img src="images/bilt/insta-carousel.png" style="object-position:50% 50%" alt="BILT carousel frame 3" loading="lazy"></figure><figure><img src="images/bilt/insta-carousel.png" style="object-position:75% 50%" alt="BILT carousel frame 4" loading="lazy"></figure><figure><img src="images/bilt/insta-carousel.png" style="object-position:100% 50%" alt="BILT carousel frame 5" loading="lazy"></figure></div></div><div class="stage"><div class="stage-lbl mono">motion receipt</div><div class="vid"><video controls playsinline preload="metadata"><source src="images/bilt/example.mp4" type="video/mp4"></video></div></div><div class="stage"><div class="stage-lbl mono">poster</div><figure class="deskshot"><img src="images/bilt/psoter.jpg" alt="BILT poster" loading="lazy"></figure></div>
+<div class="modal-head"><span class="mcat mono">brand &amp; social</span><h2>BILT Card</h2><span class="mtag mono">campaign / carousel / motion</span></div><p class="mdesc">A campaign system broken out into individual social frames, rather than one long carousel strip.</p><figure class="wide-hero carousel-crop"><img src="images/bilt/bilt-hero.png" alt="BILT carousel final frame hero" loading="lazy"></figure><div class="stage"><div class="stage-lbl mono">carousel frames</div><div class="bilt-slices"><figure><img src="images/bilt/insta-carousel.png" style="object-position:0% 50%" alt="BILT carousel frame 1" loading="lazy"></figure><figure><img src="images/bilt/insta-carousel.png" style="object-position:25% 50%" alt="BILT carousel frame 2" loading="lazy"></figure><figure><img src="images/bilt/insta-carousel.png" style="object-position:50% 50%" alt="BILT carousel frame 3" loading="lazy"></figure><figure><img src="images/bilt/insta-carousel.png" style="object-position:75% 50%" alt="BILT carousel frame 4" loading="lazy"></figure><figure><img src="images/bilt/insta-carousel.png" style="object-position:100% 50%" alt="BILT carousel frame 5" loading="lazy"></figure></div></div><div class="stage"><div class="stage-lbl mono">motion receipt</div><div class="vid"><video controls playsinline preload="metadata"><source src="images/bilt/example.mp4" type="video/mp4"></video></div></div><div class="stage"><div class="stage-lbl mono">poster</div><figure class="deskshot"><img src="images/bilt/psoter.jpg" alt="BILT poster" loading="lazy"></figure></div>
 </template>
 
 <!-- ===== Memories Out of Order ===== -->
@@ -1761,10 +1760,10 @@ display(widgets.interactive(update_heatmap, magnitude_threshold=magnitude_slider
       <div class="stage-lbl mono">02 &#183; concept reel</div>
       <div class="scan-frame">
         <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
-        <div class="video-embed">
-          <iframe src="https://player.vimeo.com/video/1205595747?title=0&amp;byline=0&amp;portrait=0&amp;badge=0" allow="autoplay; fullscreen; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" title="Memories Out of Order" loading="lazy"></iframe>
+       <div class="scanbox"><span class="c tl"></span><span class="c tr"></span><span class="c bl"></span><span class="c br"></span><div class="slbl mono">SCAN_03 · TISSAGE</div>
+    <div class="vid"><iframe src="https://player.vimeo.com/video/1205595747?title=0&amp;byline=0&amp;portrait=0&amp;badge=0" allow="autoplay; fullscreen; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" title="Memories Out of Order" loading="lazy"></iframe>
         </div>
-      </div>
+       
       <p class="mem-caption-sm mono" style="margin-top:12px;">CUT IN AFTER EFFECTS / CODE + THEORY PROMPT</p>
     </div>
 </template>
@@ -1823,7 +1822,7 @@ display(widgets.interactive(update_heatmap, magnitude_threshold=magnitude_slider
 </template>
 
 <template id="tmpl-quantum">
-<div class="modal-head"><span class="mcat mono">film &amp; code</span><h2>Quantum Time</h2><span class="mtag mono">moving image / sound metaphor</span></div><p class="mdesc">A visual and sound study around time, daily motion, and quantum metaphor.</p><figure class="hero-fill"><img src="images/quantum/quantumbackground4.png" alt="Quantum Time" loading="lazy"></figure><div class="stage"><div class="stage-lbl mono">moving result</div><div class="media-gallery fit-video"><figure><video src="images/quantum/Comp 1.mp4" controls playsinline preload="metadata"></video></figure></div></div>
+<div class="modal-head"><span class="mcat mono">film &amp; code</span><h2>Quantum Time</h2><span class="mtag mono">moving image / sound metaphor</span></div><p class="mdesc">A visual and sound study around time, daily motion, and quantum metaphor.</p><div class="stage"><div class="stage-lbl mono">moving result</div><div class="media-gallery fit-video"><figure><video src="images/quantum/Comp 1.mp4" controls playsinline preload="metadata"></video></figure></div><figure class="hero-fill"><img src="images/quantum/quantumbackground4.png" alt="Quantum Time" loading="lazy"></figure></div>
 </template>
 
 <template id="tmpl-motion">
@@ -1861,7 +1860,6 @@ display(widgets.interactive(update_heatmap, magnitude_threshold=magnitude_slider
 
 <template id="tmpl-f_tissage">
   <div class="modal-head"><span class="mcat mono">film &amp; thesis</span><h2>Tissage</h2><span class="mtag mono">short film · vimeo</span></div>
-  <figure class="deskshot"><img src="images/tissage-hero.png" alt="Tissage hero still" loading="lazy"></figure>
   <div class="scanbox"><span class="c tl"></span><span class="c tr"></span><span class="c bl"></span><span class="c br"></span><div class="slbl mono">SCAN_03 · TISSAGE</div>
     <div class="vid"><iframe src="https://player.vimeo.com/video/797873024?title=0&amp;byline=0&amp;portrait=0&amp;badge=0#t=51s" allow="autoplay; fullscreen; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" title="Tissage" loading="lazy"></iframe></div>
   </div>
@@ -1882,7 +1880,7 @@ display(widgets.interactive(update_heatmap, magnitude_threshold=magnitude_slider
 </template>
 
 <template id="tmpl-ephemeral">
-<div class="modal-head"><span class="mcat mono">game</span><h2>Ephemeral Echoes</h2><span class="mtag mono">itch.io / exploration game</span></div><figure class="hero-fill"><img src="images/0ZbwgT.webp" alt="Ephemeral Echoes hero" loading="lazy"></figure><p class="mdesc">An exploration game about moving through an environment by following traces, echoes, and fragments.</p><div class="stage"><div class="stage-lbl mono">video</div><div class="vid"><iframe src="https://player.vimeo.com/video/895663424?title=0&amp;byline=0&amp;portrait=0&amp;badge=0" allow="autoplay; fullscreen; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" title="Ephemeral Echoes" loading="lazy"></iframe></div></div><a href="https://vashadz.itch.io/final" target="_blank" rel="noopener" class="cta-live mono">Play on itch ↗</a>
+<div class="modal-head"><span class="mcat mono">game</span><h2>Ephemeral Echoes</h2><span class="mtag mono">itch.io / exploration game</span></div><p class="mdesc">An exploration game about moving through an environment by following traces, echoes, and fragments.</p><div class="stage"><div class="stage-lbl mono">video</div><div class="vid"><iframe src="https://player.vimeo.com/video/895663424?title=0&amp;byline=0&amp;portrait=0&amp;badge=0" allow="autoplay; fullscreen; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" title="Ephemeral Echoes" loading="lazy"></iframe></div></div><a href="https://vashadz.itch.io/final" target="_blank" rel="noopener" class="cta-live mono">Play on itch ↗</a>
 </template>
 
 <!-- PROJECT MODAL -->
