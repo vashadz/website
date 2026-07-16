@@ -274,7 +274,8 @@
       :root { --bar: 48px; }
       .chooser { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
       .masthead { height: 38px; padding: 0 max(14px, env(safe-area-inset-right)) 0 max(14px, env(safe-area-inset-left)); grid-template-columns: 1fr auto; font-size: 8px; }
-      .masthead span:nth-child(2) { display: none; }
+      .masthead__mark { justify-self: end; font-size: 8px; letter-spacing: .02em; }
+      .masthead span:last-child { display: none; }
       .choice { padding: 50px 16px 16px; }
       .choice__top { top: 46px; left: 16px; right: 16px; font-size: 8px; }
       .choice__kicker { margin-bottom: 11px; font-size: 8px; }
@@ -292,7 +293,6 @@
 
     @media (max-width: 760px) and (max-height: 520px) and (orientation: landscape) {
       .chooser { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr; }
-      .masthead span:nth-child(2) { display: block; }
       .choice__title { font-size: clamp(34px, 7vw, 64px); }
       .seam { width: 46px; height: 46px; }
     }
