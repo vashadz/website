@@ -3,10 +3,18 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Vasiliki Hadzikosta is a Paris-based spatial experience designer and creative technologist working across architecture, interactive systems, 3D and moving image." />
+  <meta name="description" content="Vasiliki Hadzikosta is a Paris-based spatial experience designer creating exhibitions, brand worlds, interactive spaces, 3D and moving image." />
   <meta name="theme-color" content="#090909" />
+  <link rel="canonical" href="https://vasilikihadzikosta.com/" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Vasiliki Hadzikosta — Spatial Experience &amp; Creative Technology" />
+  <meta property="og:description" content="Paris-based spatial experience designer creating exhibitions, brand worlds, interactive spaces, 3D and moving image." />
+  <meta property="og:url" content="https://vasilikihadzikosta.com/" />
+  <meta property="og:image" content="https://vasilikihadzikosta.com/assets/social-preview.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
   <title>Vasiliki Hadzikosta — Spatial Experience &amp; Creative Technology</title>
-  <link rel="preload" as="image" href="images/iconem/IMG_3749.JPG" fetchpriority="high" />
+  <link rel="preload" as="image" href="assets/saint-martin-hero.jpg" fetchpriority="high" />
   <style>
     :root {
       --ink: #090909;
@@ -31,7 +39,6 @@
       font-family: var(--sans);
       -webkit-font-smoothing: antialiased;
     }
-    body.is-viewing { overflow: hidden; }
     button, a { font: inherit; }
     a { color: inherit; }
     button { border-radius: 0; }
@@ -74,7 +81,6 @@
         var(--ink);
       transition: opacity .42s ease, visibility .42s;
     }
-    .cover.is-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
 
     .masthead {
       position: relative;
@@ -194,6 +200,7 @@
       font: 700 13px/1 var(--mono);
       letter-spacing: .07em;
       text-align: left;
+      text-decoration: none;
       text-transform: uppercase;
       transition: background .2s ease, color .2s ease;
     }
@@ -326,63 +333,6 @@
     .capabilities__label { color: var(--signal); }
     .capabilities span:last-child { border-right: 0; }
 
-    .viewer {
-      position: fixed;
-      inset: 0;
-      z-index: 100;
-      background: var(--ink);
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-      transition: opacity .42s ease, visibility .42s;
-    }
-    .viewer.is-active { opacity: 1; visibility: visible; pointer-events: auto; }
-    .profilebar {
-      height: var(--bar);
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      align-items: center;
-      gap: 12px;
-      padding: 0 12px;
-      border-bottom: 1px solid #343434;
-      background: #0d0d0d;
-      color: white;
-      font: 600 12px/1 var(--mono);
-      letter-spacing: .07em;
-      text-transform: uppercase;
-    }
-    .profilebar__home,
-    .profilebar__tab {
-      appearance: none;
-      border: 1px solid #505050;
-      color: inherit;
-      background: transparent;
-      cursor: pointer;
-      font: inherit;
-      letter-spacing: inherit;
-      text-transform: inherit;
-    }
-    .profilebar__home {
-      justify-self: start;
-      width: 40px;
-      height: 40px;
-      font-size: 22px;
-      line-height: 1;
-    }
-    .profilebar__tabs { display: flex; gap: 6px; }
-    .profilebar__tab { min-height: 40px; padding: 0 16px; }
-    .profilebar__tab.is-active { border-color: white; background: white; color: var(--ink); }
-    .profilebar__label { justify-self: end; color: #aaa; white-space: nowrap; }
-    .profilebar button:hover,
-    .profilebar button:focus-visible { border-color: var(--acid); outline: none; }
-    .profileframe {
-      display: block;
-      width: 100%;
-      height: calc(100% - var(--bar));
-      border: 0;
-      background: white;
-    }
-
     @media (max-width: 1120px) {
       .cover { grid-template-rows: var(--bar) auto auto; overflow: visible; }
       .stage { grid-template-columns: 1fr .84fr; }
@@ -425,10 +375,6 @@
       .capabilities span:nth-child(3n) { border-right: 1px solid var(--line-dark); }
       .capabilities > :nth-child(even) { border-right: 0; }
       .capabilities > :nth-last-child(-n+2) { border-bottom: 0; }
-      .profilebar { grid-template-columns: auto 1fr; gap: 6px; padding: 0 7px; }
-      .profilebar__tabs { justify-self: stretch; }
-      .profilebar__tab { flex: 1; min-width: 0; padding: 0 5px; font-size: 12px; letter-spacing: .015em; }
-      .profilebar__label { display: none; }
     }
 
     @media (max-width: 390px) {
@@ -473,21 +419,21 @@
         </h1>
 
         <div class="intro__lower">
-          <p class="intro__copy" id="applicationCopy">Architecture-trained and working across spatial design, interactive systems, 3D and moving image—from first concept to <strong>live experience.</strong></p>
+          <p class="intro__copy" id="applicationCopy">Architecture-trained and Paris-based, I create experiences for culture and brands—across exhibitions, interactive spaces, 3D and moving image—from first concept to <strong>live experience.</strong></p>
           <div class="actions" aria-label="Portfolio paths">
-            <button class="action" type="button" data-profile="creative">
+            <a class="action" href="profile-creative-tech.html" data-profile="creative">
               <span>View selected work</span><span class="action__arrow" aria-hidden="true">→</span>
-            </button>
-            <button class="action action--secondary" type="button" data-profile="engineer">
+            </a>
+            <a class="action action--secondary" href="profile-design-engineer.html" data-profile="engineer">
               <span>Technical archive</span><span class="action__arrow" aria-hidden="true">→</span>
-            </button>
+            </a>
           </div>
         </div>
       </div>
 
       <figure class="installation" id="installation">
-        <img class="installation__image installation__image--base" src="images/iconem/IMG_3749.JPG" width="2942" height="3923" alt="Visitors viewing an illuminated medieval fresco installation at the Cité de l’Architecture et du Patrimoine" fetchpriority="high" />
-        <img class="installation__image installation__image--reveal" src="images/iconem/IMG_3749.JPG" width="2942" height="3923" alt="" aria-hidden="true" />
+        <img class="installation__image installation__image--base" src="assets/saint-martin-hero.jpg" width="1350" height="1800" alt="Visitors viewing an illuminated medieval fresco installation at the Cité de l’Architecture et du Patrimoine" fetchpriority="high" />
+        <img class="installation__image installation__image--reveal" src="assets/saint-martin-hero.jpg" width="1350" height="1800" alt="" aria-hidden="true" />
         <span class="installation__crosshair" aria-hidden="true"></span>
         <span class="installation__index">Live / 01</span>
         <figcaption class="installation__caption">
@@ -502,117 +448,26 @@
       <span>Spatial concepts</span>
       <span>Interactive exhibitions</span>
       <span>3D environments</span>
-      <span>Creative code</span>
+      <span>Brand &amp; fashion imagery</span>
       <span>Moving image</span>
     </div>
   </main>
 
-  <section class="viewer" id="viewer" aria-label="Selected portfolio profile" aria-hidden="true" inert>
-    <nav class="profilebar" aria-label="Portfolio profiles">
-      <button class="profilebar__home" id="homeButton" type="button" aria-label="Return to application cover">×</button>
-      <div class="profilebar__tabs">
-        <button class="profilebar__tab" type="button" data-profile="creative">Selected work</button>
-        <button class="profilebar__tab" type="button" data-profile="engineer">Technical archive</button>
-      </div>
-      <span class="profilebar__label" id="viewerLabel">Vasiliki Hadzikosta / Portfolio</span>
-    </nav>
-    <iframe class="profileframe" id="profileFrame" title="Vasiliki Hadzikosta portfolio" loading="eager"></iframe>
-  </section>
-
   <script>
-    const profiles = {
-      engineer: {
-        src: "profile-design-engineer.html",
-        title: "Vasiliki Hadzikosta — Design Engineer"
-      },
-      creative: {
-        src: "profile-creative-tech.html",
-        title: "Vasiliki Hadzikosta — Creative Technologist"
-      }
-    };
-
-    const genericTitle = "Vasiliki Hadzikosta — Spatial Experience & Creative Technology";
-    const applicationTitle = "Vasiliki Hadzikosta — Application for Bureau Betak";
     const chooser = document.getElementById("chooser");
-    const viewer = document.getElementById("viewer");
-    const frame = document.getElementById("profileFrame");
-    const homeButton = document.getElementById("homeButton");
-    const profileButtons = document.querySelectorAll("[data-profile]");
-    const tabs = document.querySelectorAll(".profilebar__tab");
     const installation = document.getElementById("installation");
     const editionLabel = document.getElementById("editionLabel");
     const applicationCopy = document.getElementById("applicationCopy");
-    const viewerLabel = document.getElementById("viewerLabel");
     const initialUrl = new URL(window.location.href);
     const isBetakEdition = initialUrl.searchParams.get("for") === "bureau-betak";
 
     if (isBetakEdition) {
       document.documentElement.dataset.edition = "bureau-betak";
       editionLabel.textContent = "Application / Bureau Betak / Paris";
-      viewerLabel.textContent = "Application / Bureau Betak";
       applicationCopy.innerHTML = "I’m drawn to Bureau Betak’s collective craft: turning one clear idea into an experience that holds in space, through a lens and in memory. My practice connects architectural thinking, image-making and <strong>technical execution.</strong>";
-      document.title = applicationTitle;
+      document.title = "Vasiliki Hadzikosta — Application for Bureau Betak";
+      document.querySelector('[data-profile="creative"]').href = "profile-creative-tech.html?for=bureau-betak";
     }
-
-    function setProfile(name, updateHistory = true) {
-      const profile = profiles[name];
-      if (!profile) return showChooser(updateHistory);
-
-      const targetSrc = isBetakEdition && name === "creative"
-        ? profile.src + "?for=bureau-betak"
-        : profile.src;
-      if (frame.getAttribute("src") !== targetSrc) frame.src = targetSrc;
-      tabs.forEach(tab => tab.classList.toggle("is-active", tab.dataset.profile === name));
-      chooser.classList.add("is-hidden");
-      chooser.setAttribute("aria-hidden", "true");
-      chooser.inert = true;
-      viewer.classList.add("is-active");
-      viewer.setAttribute("aria-hidden", "false");
-      viewer.inert = false;
-      document.body.classList.add("is-viewing");
-      document.title = isBetakEdition ? applicationTitle : profile.title;
-
-      if (updateHistory) {
-        const url = new URL(window.location.href);
-        url.searchParams.set("profile", name);
-        history.pushState({ profile: name }, "", url);
-      }
-
-      homeButton.focus({ preventScroll: true });
-    }
-
-    function showChooser(updateHistory = true) {
-      viewer.classList.remove("is-active");
-      viewer.setAttribute("aria-hidden", "true");
-      viewer.inert = true;
-      chooser.classList.remove("is-hidden");
-      chooser.removeAttribute("aria-hidden");
-      chooser.inert = false;
-      document.body.classList.remove("is-viewing");
-      tabs.forEach(tab => tab.classList.remove("is-active"));
-      document.title = isBetakEdition ? applicationTitle : genericTitle;
-
-      if (updateHistory) {
-        const url = new URL(window.location.href);
-        url.searchParams.delete("profile");
-        history.pushState({}, "", url);
-      }
-
-      document.querySelector('[data-profile="creative"]')?.focus({ preventScroll: true });
-    }
-
-    profileButtons.forEach(button => {
-      button.addEventListener("click", () => setProfile(button.dataset.profile));
-    });
-    homeButton.addEventListener("click", () => showChooser());
-
-    window.addEventListener("keydown", event => {
-      if (event.key === "Escape" && viewer.classList.contains("is-active")) showChooser();
-    });
-    window.addEventListener("popstate", () => {
-      const name = new URL(window.location.href).searchParams.get("profile");
-      name ? setProfile(name, false) : showChooser(false);
-    });
 
     if (window.matchMedia("(pointer: fine)").matches && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       installation.addEventListener("pointermove", event => {
@@ -628,8 +483,11 @@
       });
     }
 
-    const initialProfile = initialUrl.searchParams.get("profile");
-    if (profiles[initialProfile]) setProfile(initialProfile, false);
+    const legacyProfile = initialUrl.searchParams.get("profile");
+    if (legacyProfile === "creative" || legacyProfile === "engineer") {
+      const target = legacyProfile === "creative" ? "profile-creative-tech.html" : "profile-design-engineer.html";
+      window.location.replace(target + (isBetakEdition && legacyProfile === "creative" ? "?for=bureau-betak" : ""));
+    }
   </script>
 </body>
 </html>

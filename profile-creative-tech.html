@@ -3,10 +3,18 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Selected spatial, moving-image and creative technology work by Paris-based designer Vasiliki Hadzikosta." />
+  <meta name="description" content="Selected exhibition, digital fashion, brand imagery and moving-image work by Paris-based designer Vasiliki Hadzikosta." />
   <meta name="theme-color" content="#090909" />
+  <link rel="canonical" href="https://vasilikihadzikosta.com/profile-creative-tech.html" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Vasiliki Hadzikosta — Selected Work" />
+  <meta property="og:description" content="Spatial experiences, digital fashion, moving image and creative technology by Vasiliki Hadzikosta." />
+  <meta property="og:url" content="https://vasilikihadzikosta.com/profile-creative-tech.html" />
+  <meta property="og:image" content="https://vasilikihadzikosta.com/assets/social-preview.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
   <title>Vasiliki Hadzikosta — Selected Work</title>
-  <link rel="preload" as="image" href="images/iconem/IMG_3749.JPG" fetchpriority="high" />
+  <link rel="preload" as="image" href="assets/saint-martin-hero.jpg" fetchpriority="high" />
   <style>
     :root {
       --ink: #090909;
@@ -508,7 +516,7 @@
     }
     .signal-track {
       display: grid;
-      grid-template-columns: repeat(4, minmax(270px, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 1px;
       padding: 1px;
       background: var(--ink);
@@ -598,6 +606,7 @@
     }
     .approach h2 { font-size: clamp(72px, 10vw, 178px); }
     .approach h2 em { color: var(--signal); }
+    .approach__bio { max-width: 620px; margin: 0; font-size: clamp(18px, 1.8vw, 27px); line-height: 1.25; letter-spacing: -.02em; }
     .approach__steps {
       display: grid;
       grid-template-rows: repeat(3, 1fr);
@@ -761,7 +770,11 @@
       text-transform: uppercase;
     }
     .dossier__bar-title { justify-self: center; }
-    .dossier__bar-count { justify-self: end; color: #aaa; }
+    .dossier__bar-actions { justify-self: end; display: flex; align-items: center; gap: 18px; }
+    .dossier__bar-count { color: #aaa; }
+    .dossier__permalink { text-underline-offset: 4px; white-space: nowrap; }
+    .dossier__permalink:hover,
+    .dossier__permalink:focus-visible { color: var(--acid); outline: none; }
     .dossier__close {
       justify-self: start;
       min-height: 38px;
@@ -854,6 +867,7 @@
     }
     .dossier__link:hover,
     .dossier__link:focus-visible { background: var(--acid); border-color: var(--acid); color: var(--ink); outline: none; }
+    .dossier__link[hidden] { display: none; }
     .dossier__gallery {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -987,7 +1001,7 @@
         border: 0;
       }
       .dossier__bar { grid-template-columns: auto 1fr; gap: 12px; }
-      .dossier__bar-title { justify-self: end; }
+      .dossier__bar-title { display: none; }
       .dossier__bar-count { display: none; }
       .dossier__hero { grid-template-columns: 1fr; }
       .dossier__headline { min-height: 62svh; border-right: 0; border-bottom: 1px solid var(--ink); }
@@ -1005,7 +1019,16 @@
       .dossier__facts { grid-template-columns: 1fr; }
       .fact:nth-child(odd) { border-right: 0; }
       .fact:nth-child(even) { padding-left: 0; }
-      .contact__links { gap: 11px; font-size: 11px; }
+      .contact__foot { grid-template-columns: 1fr; gap: 20px; }
+      .contact__links { flex-wrap: wrap; gap: 11px; font-size: 11px; }
+      .contact__back { justify-self: start; }
+    }
+
+    @media (max-width: 360px) {
+      .showbar { gap: 4px; padding: 0 5px; }
+      .showbar__brand { font-size: 0; }
+      .showbar__brand::after { content: "VH"; font-size: 13px; }
+      .showbar__nav a { min-width: 40px; }
     }
 
     @media (pointer: coarse) {
@@ -1042,9 +1065,9 @@
     <div class="showbar__right">
       <nav class="showbar__nav" aria-label="Selected project chapters">
         <a href="#space" data-scene-link="space" aria-label="Project one, In space" aria-current="true">01</a>
-        <a href="#lens" data-scene-link="lens" aria-label="Project two, Through a lens">02</a>
-        <a href="#memory" data-scene-link="memory" aria-label="Project three, In memory">03</a>
-        <a href="#signals" data-scene-link="signals" aria-label="Other signals">+</a>
+        <a href="#signals" data-scene-link="signals" aria-label="Chapter two, Fashion and image">02</a>
+        <a href="#lens" data-scene-link="lens" aria-label="Chapter three, Through a lens">03</a>
+        <a href="#memory" data-scene-link="memory" aria-label="Chapter four, In memory">04</a>
       </nav>
       <a class="showbar__contact" id="contactLink" href="mailto:vhadzikosta@gmail.com?subject=Portfolio%20enquiry%20%E2%80%94%20Vasiliki%20Hadzikosta">Email ↗</a>
     </div>
@@ -1054,7 +1077,7 @@
   <main>
     <article class="scene scene--space" id="space" data-cue="Run of show / 01 · Space" aria-labelledby="space-condition">
       <div class="scene__copy">
-        <p class="scene__label reveal"><span id="editionLabel">Selected work / Three conditions</span><span>01 / 03</span></p>
+        <p class="scene__label reveal"><span id="editionLabel">Selected work / Four chapters</span><span>01 / 04</span></p>
         <h1 class="scene__condition reveal" id="space-condition"><span>In</span><em>space.</em></h1>
         <div class="scene__project reveal">
           <p class="scene__project-kicker">Heritage × Technology / Paris / 2024</p>
@@ -1073,17 +1096,58 @@
       </div>
 
       <figure class="scene__media aperture" data-aperture>
-        <img class="aperture__image aperture__base" src="images/iconem/IMG_3749.JPG" width="2942" height="3923" alt="Visitors viewing the Saint-Martin de Vic illuminated fresco installation" fetchpriority="high" />
-        <img class="aperture__image aperture__reveal" src="images/iconem/IMG_3749.JPG" width="2942" height="3923" alt="" aria-hidden="true" />
+        <img class="aperture__image aperture__base" src="assets/saint-martin-hero.jpg" width="1350" height="1800" alt="Visitors viewing the Saint-Martin de Vic illuminated fresco installation" fetchpriority="high" />
+        <img class="aperture__image aperture__reveal" src="assets/saint-martin-hero.jpg" width="1350" height="1800" alt="" aria-hidden="true" />
         <span class="aperture__reticle" aria-hidden="true"></span>
         <figcaption class="media-caption">
-          <span><strong>Installation view / visitor scale</strong>Physical heritage translated through light and a spatial interface</span>
+          <span><strong>Saint-Martin de Vic / permanent installation</strong>Frescoes explored through light and a spatial interface</span>
           <button class="aperture__toggle" type="button" aria-pressed="false">Reveal colour</button>
         </figcaption>
       </figure>
     </article>
 
-    <article class="scene scene--lens" id="lens" data-cue="Run of show / 02 · Lens" aria-labelledby="lens-condition">
+    <section class="signals" id="signals" data-cue="Run of show / 02 · Image" aria-labelledby="signals-title">
+      <div class="signals__head">
+        <h2 class="reveal" id="signals-title">Fashion &amp;<em>image.</em></h2>
+        <p class="reveal">Digital fashion and brand imagery lead this selection, followed by playable and coded studies. Each project connects visual storytelling with a working system.</p>
+      </div>
+
+      <div class="signal-track">
+        <button class="signal-card" type="button" data-dossier="roblox" aria-haspopup="dialog">
+          <span class="signal-card__media"><img src="images/roblox/Roblox-x-Parsons-2022-1.webp" alt="Roblox and Parsons digital fashion collaboration" loading="lazy" decoding="async" /></span>
+          <span class="signal-card__body">
+            <span class="signal-card__meta"><span>Fashion × Metaverse</span><span>2022</span></span>
+            <span class="signal-card__title-row"><span class="signal-card__title">Roblox × Parsons</span><span class="signal-card__arrow" aria-hidden="true">↗</span></span>
+          </span>
+        </button>
+
+        <button class="signal-card" type="button" data-dossier="bilt" aria-haspopup="dialog">
+          <span class="signal-card__media"><img src="assets/bilt-card.jpg" alt="BILT Card brand and motion study" loading="lazy" decoding="async" /></span>
+          <span class="signal-card__body">
+            <span class="signal-card__meta"><span>Brand × Motion</span><span>2022</span></span>
+            <span class="signal-card__title-row"><span class="signal-card__title">BILT Card</span><span class="signal-card__arrow" aria-hidden="true">↗</span></span>
+          </span>
+        </button>
+
+        <button class="signal-card" type="button" data-dossier="ratgame" aria-haspopup="dialog">
+          <span class="signal-card__media"><img src="assets/rat-race.jpg" alt="Rat Race Unity game environment" loading="lazy" decoding="async" /></span>
+          <span class="signal-card__body">
+            <span class="signal-card__meta"><span>Game × City</span><span>2023</span></span>
+            <span class="signal-card__title-row"><span class="signal-card__title">Rat Race</span><span class="signal-card__arrow" aria-hidden="true">↗</span></span>
+          </span>
+        </button>
+
+        <button class="signal-card" type="button" data-dossier="data-posters" aria-haspopup="dialog">
+          <span class="signal-card__media"><img src="assets/artwashing.jpg" alt="Artwashing generative data poster" loading="lazy" decoding="async" /></span>
+          <span class="signal-card__body">
+            <span class="signal-card__meta"><span>Code × Print</span><span>2022</span></span>
+            <span class="signal-card__title-row"><span class="signal-card__title">Data Posters</span><span class="signal-card__arrow" aria-hidden="true">↗</span></span>
+          </span>
+        </button>
+      </div>
+    </section>
+
+    <article class="scene scene--lens" id="lens" data-cue="Run of show / 03 · Lens" aria-labelledby="lens-condition">
       <figure class="scene__media film-stage" id="memoriesStage">
         <img class="film-stage__poster" src="images/code+theory/memories-hero-poster.png" width="2714" height="1518" alt="Memories Out of Order generative film still" loading="lazy" decoding="async" />
         <video class="film-stage__video" id="memoriesVideo" src="images/code+theory/memories.mp4" muted loop playsinline preload="none" aria-label="Memories Out of Order moving archive preview"></video>
@@ -1094,7 +1158,7 @@
       </figure>
 
       <div class="scene__copy">
-        <p class="scene__label reveal"><span>Selected work / Moving image</span><span>02 / 03</span></p>
+        <p class="scene__label reveal"><span>Selected work / Moving image</span><span>03 / 04</span></p>
         <h2 class="scene__condition reveal" id="lens-condition"><span>Through</span><em>a lens.</em></h2>
         <div class="scene__project reveal">
           <p class="scene__project-kicker">AI × Moving Image / 2024</p>
@@ -1113,9 +1177,9 @@
       </div>
     </article>
 
-    <article class="scene scene--memory" id="memory" data-cue="Run of show / 03 · Memory" aria-labelledby="memory-condition">
+    <article class="scene scene--memory" id="memory" data-cue="Run of show / 04 · Memory" aria-labelledby="memory-condition">
       <div class="scene__copy">
-        <p class="scene__label reveal"><span>Selected work / 3D scan</span><span>03 / 03</span></p>
+        <p class="scene__label reveal"><span>Selected work / 3D scan</span><span>04 / 04</span></p>
         <h2 class="scene__condition reveal" id="memory-condition"><span>In</span><em>memory.</em></h2>
         <div class="scene__project reveal">
           <p class="scene__project-kicker">Film × 3D Scan / New York / 2022</p>
@@ -1144,51 +1208,11 @@
       </figure>
     </article>
 
-    <section class="signals" id="signals" data-cue="Other signals / Extended practice" aria-labelledby="signals-title">
-      <div class="signals__head">
-        <h2 class="reveal" id="signals-title">Other<em>signals.</em></h2>
-        <p class="reveal">Fashion in virtual worlds, playable cities, campaign systems and coded critique—four more ways the practice moves between image, interaction and culture.</p>
-      </div>
-
-      <div class="signal-track">
-        <button class="signal-card" type="button" data-dossier="roblox" aria-haspopup="dialog">
-          <span class="signal-card__media"><img src="images/roblox/Roblox-x-Parsons-2022-1.webp" alt="Roblox and Parsons digital fashion collaboration" loading="lazy" decoding="async" /></span>
-          <span class="signal-card__body">
-            <span class="signal-card__meta"><span>Fashion × Metaverse</span><span>2022</span></span>
-            <span class="signal-card__title-row"><span class="signal-card__title">Roblox × Parsons</span><span class="signal-card__arrow" aria-hidden="true">↗</span></span>
-          </span>
-        </button>
-
-        <button class="signal-card" type="button" data-dossier="bilt" aria-haspopup="dialog">
-          <span class="signal-card__media"><img src="images/bilt/bilt-hero.png" alt="BILT Card campaign identity" loading="lazy" decoding="async" /></span>
-          <span class="signal-card__body">
-            <span class="signal-card__meta"><span>Brand × Motion</span><span>2022</span></span>
-            <span class="signal-card__title-row"><span class="signal-card__title">BILT Card</span><span class="signal-card__arrow" aria-hidden="true">↗</span></span>
-          </span>
-        </button>
-
-        <button class="signal-card" type="button" data-dossier="ratgame" aria-haspopup="dialog">
-          <span class="signal-card__media"><img src="images/ratrace/ratrace.png" alt="Rat Race Unity game environment" loading="lazy" decoding="async" /></span>
-          <span class="signal-card__body">
-            <span class="signal-card__meta"><span>Game × City</span><span>2023</span></span>
-            <span class="signal-card__title-row"><span class="signal-card__title">Rat Race</span><span class="signal-card__arrow" aria-hidden="true">↗</span></span>
-          </span>
-        </button>
-
-        <button class="signal-card" type="button" data-dossier="data-posters" aria-haspopup="dialog">
-          <span class="signal-card__media"><img src="images/posters/artwashing1.png" alt="Artwashing generative data poster" loading="lazy" decoding="async" /></span>
-          <span class="signal-card__body">
-            <span class="signal-card__meta"><span>Code × Print</span><span>2022</span></span>
-            <span class="signal-card__title-row"><span class="signal-card__title">Data Posters</span><span class="signal-card__arrow" aria-hidden="true">↗</span></span>
-          </span>
-        </button>
-      </div>
-    </section>
-
     <section class="approach" id="approach" data-cue="Practice / From idea to encounter" aria-labelledby="approach-title">
       <div class="approach__headline">
         <p class="approach__label reveal">Practice / From idea to encounter</p>
         <h2 class="reveal" id="approach-title">One idea.<em>Many states.</em></h2>
+        <p class="approach__bio reveal">An MEng from AUTh and an MFA from Parsons shape how I work across exhibition design, digital systems and moving image.</p>
       </div>
       <div class="approach__steps">
         <article class="approach__step reveal">
@@ -1210,13 +1234,14 @@
   <footer class="contact" id="contact">
     <div class="contact__top">
       <p>Available for spatial experiences, interactive exhibitions and special projects.</p>
-      <span>Paris / France · Open to full-time and collaborations</span>
+      <span>Paris / France · Open to permanent roles, freelance projects and collaborations worldwide</span>
     </div>
     <a class="contact__title" id="emailTitle" href="mailto:vhadzikosta@gmail.com?subject=Portfolio%20enquiry%20%E2%80%94%20Vasiliki%20Hadzikosta">
       Make it<em>memorable. ↗</em>
     </a>
     <div class="contact__foot">
       <div class="contact__links">
+        <a href="profile-design-engineer.html">Systems archive</a>
         <a href="https://www.linkedin.com/in/vhadzikosta" target="_blank" rel="noopener">LinkedIn</a>
         <a href="https://github.com/vashadz" target="_blank" rel="noopener">GitHub</a>
         <a href="https://www.instagram.com/latourneeparis" target="_blank" rel="noopener">Instagram</a>
@@ -1230,7 +1255,10 @@
     <div class="dossier__bar">
       <button class="dossier__close" id="dossierClose" type="button">Close ×</button>
       <span class="dossier__bar-title">VH / Project file</span>
-      <span class="dossier__bar-count" id="dossierCount">File 01 / 07</span>
+      <div class="dossier__bar-actions">
+        <span class="dossier__bar-count" id="dossierCount">File 01 / 07</span>
+        <a class="dossier__permalink" id="dossierPermalink" href="profile-creative-tech.html?project=iconem" target="_top">Direct link ↗</a>
+      </div>
     </div>
     <div class="dossier__scroll" id="dossierScroll">
       <section class="dossier__hero">
@@ -1261,8 +1289,8 @@
       iconem: {
         number: "01", year: "2024", category: "Heritage × Technology", title: "Saint-Martin de Vic",
         statement: "The interface behaves like an instrument for moving through detail, time and restoration.",
-        description: "A permanent interactive installation for the Cité de l’Architecture et du Patrimoine. High-resolution scans reveal the church’s medieval frescoes through a spatial, navigable narrative.",
-        facts: [["Role", "3D exhibition design"], ["Methods", "Photogrammetry / video mapping"], ["Context", "Permanent museum installation"], ["Location", "Paris, France"]],
+        description: "A permanent digital installation at the Cité de l’Architecture et du Patrimoine, created in partnership with Iconem. Visitors explore the medieval frescoes through high-resolution scans, an interactive console and video mapping. My contribution was 3D exhibition design.",
+        facts: [["My role", "3D exhibition design"], ["Venue", "Cité de l’Architecture, Paris"], ["Project partner", "Iconem"], ["Format", "Permanent museum installation"]],
         link: "https://www.citedelarchitecture.fr/fr/article/nouveau-dispositif-numerique-des-fresques-de-leglise-saint-martin-de-vic",
         linkLabel: "Read the museum article",
         media: [
@@ -1271,7 +1299,7 @@
         ]
       },
       memories: {
-        number: "02", year: "2024", category: "AI × Moving Image", title: "Memories Out of Order",
+        number: "06", year: "2024", category: "AI × Moving Image", title: "Memories Out of Order",
         statement: "Every invented detail exposes how remembering is already a form of generation.",
         description: "An experiment in memory as an unreliable database. Generated images, found fragments and changing sequences create a film that refuses a single, stable past.",
         facts: [["Role", "Concept / direction / edit"], ["Methods", "Generative image / montage"], ["Context", "Non-linear moving archive"], ["Location", "New York / Paris"]],
@@ -1281,7 +1309,7 @@
         ]
       },
       labyrinth: {
-        number: "03", year: "2022", category: "Film × 3D Scan", title: "Labyrinth of Broken Dreams",
+        number: "07", year: "2022", category: "Film × 3D Scan", title: "Labyrinth of Broken Dreams",
         statement: "The failures of a scan become the emotional architecture of the film.",
         description: "A short film assembled from scans, ruins and glitches. Instead of correcting the broken geometry, the project uses it as its emotional language.",
         facts: [["Role", "Direction / 3D / edit"], ["Methods", "3D scan / spatial montage"], ["Context", "Experimental short film"], ["Location", "New York"]],
@@ -1295,7 +1323,7 @@
         ]
       },
       roblox: {
-        number: "04", year: "2022", category: "Fashion × Metaverse", title: "Roblox × Parsons",
+        number: "02", year: "2022", category: "Fashion × Metaverse", title: "Roblox × Parsons",
         statement: "A digital garment has its own physics, camera, community and performance.",
         description: "Digital garment and avatar experiments created through a Parsons collaboration, exploring fashion as identity, interface and behavior inside a social game world.",
         facts: [["Role", "Digital fashion designer"], ["Methods", "Avatar systems / 3D garment"], ["Context", "Parsons collaboration"], ["Location", "New York"]],
@@ -1307,18 +1335,18 @@
         ]
       },
       bilt: {
-        number: "05", year: "2022", category: "Brand × Motion", title: "BILT Card",
+        number: "03", year: "2022", category: "Brand × Motion", title: "BILT Card",
         statement: "Everyday transactions become compact graphic events.",
-        description: "A campaign system for a rewards card, built across hero imagery, social sequences, receipts and motion.",
-        facts: [["Role", "Campaign / motion design"], ["Methods", "Art direction / social systems"], ["Context", "Brand campaign"], ["Location", "New York"]],
+        description: "A visual and motion study for a rewards card, explored across hero imagery, social sequences and animated receipts.",
+        facts: [["Role", "Campaign / motion design"], ["Methods", "Art direction / social systems"], ["Format", "Brand and motion study"], ["Location", "New York"]],
         media: [
-          { src: "images/bilt/bilt-hero.png", caption: "Campaign hero", wide: true },
+          { src: "images/bilt/bilt-hero.png", caption: "Brand study / hero", wide: true },
           { type: "video", src: "images/bilt/example.mp4", caption: "Animated receipt / motion study", poster: "images/bilt/psoter.jpg" },
-          { src: "images/bilt/psoter.jpg", caption: "Campaign poster" }
+          { src: "images/bilt/psoter.jpg", caption: "Poster study" }
         ]
       },
       ratgame: {
-        number: "06", year: "2023", category: "Game × City", title: "Rat Race",
+        number: "04", year: "2023", category: "Game × City", title: "Rat Race",
         statement: "The subway becomes both level and metaphor.",
         description: "A playable urban fever dream about precarity and repetition, with pacing, atmosphere and friction driving the experience.",
         facts: [["Role", "Game / level designer"], ["Methods", "Unity / C# / world building"], ["Context", "Playable game"], ["Location", "New York"]],
@@ -1328,7 +1356,7 @@
         ]
       },
       "data-posters": {
-        number: "07", year: "2022", category: "Code × Print", title: "Data Posters",
+        number: "05", year: "2022", category: "Code × Print", title: "Data Posters",
         statement: "The poster is both image and argument.",
         description: "A series of generative posters using art-market data as both source and subject. Code becomes an editorial instrument for revealing price, repetition and power.",
         facts: [["Role", "Creative coder / designer"], ["Methods", "p5.js / data / print"], ["Context", "Self-initiated research"], ["Location", "New York"]],
@@ -1352,7 +1380,7 @@
     if (isBetakEdition) {
       document.title = "Vasiliki Hadzikosta — Selected Work for Bureau Betak";
       homeLink.href = "index.html?for=bureau-betak";
-      editionLabel.textContent = "Application / Bureau Betak / Three conditions";
+      editionLabel.textContent = "Application / Bureau Betak / Four chapters";
       const applicationEmail = "mailto:vhadzikosta@gmail.com?subject=Bureau%20Betak%20application%20%E2%80%94%20Vasiliki%20Hadzikosta";
       contactLink.href = applicationEmail;
       emailTitle.href = applicationEmail;
@@ -1465,6 +1493,7 @@
     const dossierFacts = document.getElementById("dossierFacts");
     const dossierLink = document.getElementById("dossierLink");
     const dossierCount = document.getElementById("dossierCount");
+    const dossierPermalink = document.getElementById("dossierPermalink");
     const dossierGallery = document.getElementById("dossierGallery");
     let dossierTrigger = null;
 
@@ -1507,15 +1536,16 @@
       return figure;
     }
 
-    function openDossier(key, trigger) {
+    function openDossier(key, trigger, updateHistory = true) {
       const project = dossiers[key];
       if (!project) return;
-      dossierTrigger = trigger;
+      dossierTrigger = trigger || null;
       dossierKicker.textContent = project.category + " / " + project.year;
       dossierTitle.textContent = project.title;
       dossierStatement.textContent = project.statement;
       dossierDescription.textContent = project.description;
       dossierCount.textContent = "File " + project.number + " / 07";
+      dossierPermalink.href = "profile-creative-tech.html?project=" + encodeURIComponent(key);
       dossierFacts.replaceChildren(...project.facts.map(fact => makeFact(fact[0], fact[1])));
       dossierGallery.replaceChildren(...project.media.map((item, index) => makeMedia(item, index)));
       if (project.link) {
@@ -1528,7 +1558,12 @@
       }
       dossierScroll.scrollTop = 0;
       document.body.classList.add("has-dialog");
-      dossier.showModal();
+      if (!dossier.open) dossier.showModal();
+      if (updateHistory) {
+        const url = new URL(window.location.href);
+        url.searchParams.set("project", key);
+        history.pushState({ project: key }, "", url);
+      }
     }
 
     document.querySelectorAll("[data-dossier]").forEach(button => {
@@ -1538,8 +1573,20 @@
     dossier.addEventListener("close", () => {
       document.body.classList.remove("has-dialog");
       dossier.querySelectorAll("video").forEach(video => video.pause());
+      const url = new URL(window.location.href);
+      if (url.searchParams.has("project")) {
+        url.searchParams.delete("project");
+        history.replaceState({}, "", url);
+      }
       if (dossierTrigger) dossierTrigger.focus({ preventScroll: true });
     });
+    window.addEventListener("popstate", () => {
+      const key = new URL(window.location.href).searchParams.get("project");
+      if (key && dossiers[key]) openDossier(key, null, false);
+      else if (dossier.open) dossier.close();
+    });
+    const initialProject = new URL(window.location.href).searchParams.get("project");
+    if (initialProject && dossiers[initialProject]) openDossier(initialProject, null, false);
   </script>
 </body>
 </html>
