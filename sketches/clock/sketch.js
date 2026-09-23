@@ -10,11 +10,20 @@ let currentSecond = 0;
 let nextImage;
 let nextImageIndex = 0;
 let totalRectangles = 0;
+const readyImages = new Set();
+
+function requestImage(index) {
+  if (images[index]) return;
+  images[index] = loadImage(
+    "../../assets/editorial/clock-" + String(index + 1).padStart(2, "0") + ".jpg",
+    () => readyImages.add(index)
+  );
+}
 
 function preload() {
-  for (let i = 1; i <= 24; i++) {
-    images.push(loadImage("../../assets/editorial/clock-" + String(i).padStart(2,"0") + ".jpg"));
-  }
+  const initialHour = new Date().getHours();
+  requestImage(initialHour);
+  requestImage((initialHour + 1) % 24);
 }
 
 function setup() {
@@ -37,10 +46,15 @@ function draw() {
 
   // Determine the current image index based on the current hour
   currentImageIndex = currentHour;
-  nextImage = images[(currentHour + 1) % 24];
+  nextImageIndex = (currentHour + 1) % 24;
+  requestImage(currentImageIndex);
+  requestImage(nextImageIndex);
+  if (!readyImages.has(currentImageIndex)) return;
+  nextImage = images[nextImageIndex];
 
   // Display the current image
   image(images[currentImageIndex], 0, 0, width, height);
+  if (!readyImages.has(nextImageIndex)) return;
 
   // Calculate the position for the next rectangle based on the time
   totalRectangles =
