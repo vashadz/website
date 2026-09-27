@@ -2,6 +2,9 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> parent of 2e3b721 (Rebuild portfolio layout around strongest work)
 =======
 >>>>>>> parent of 2e3b721 (Rebuild portfolio layout around strongest work)
 @font-face{font-family:Instrument;src:url('fonts/InstrumentSerif-Italic.ttf') format('truetype');font-weight:400;font-style:italic;font-display:swap}
@@ -24,6 +27,7 @@ dialog{padding:0;border:0;color:var(--ink);background:var(--paper)}dialog::backd
 .dialog-top{padding:17px var(--gutter);gap:15px}.dialog-top #reader-category{display:none}.dialog-top .mini-name{font-size:9px}.dialog-top button{font-size:11px;gap:16px}.reader-intro{padding:45px var(--gutter) 40px}.reader-intro .eyebrow{font-size:9px}.reader-intro h2{font-size:17vw;max-width:100%;margin:25px 0 32px;overflow-wrap:anywhere}.reader-copy{grid-template-columns:1fr;gap:25px;margin-left:0}.reader-copy .description{font-size:13px;line-height:1.8}.reader-facts{font-size:10px}.reader-facts p{padding:8px 0}.reader-note{font-size:10px;margin-top:20px}.reader-copy .text-link{font-size:11px;margin-top:24px}.reader-gallery{gap:35px 18px;padding:0 var(--gutter) 50px}.reader-media.portrait,.reader-media.half{grid-column:1/-1}.reader-media figcaption{font-size:9px;margin-top:10px}.reader-end{padding:35px var(--gutter)}.reader-end>p{font-size:32px}.reader-end button{font-size:10px}.index-content{padding:38px var(--gutter) 60px}.index-content h2{font-size:21vw;gap:20px}.index-content h2 span{font-size:10px}.index-filters{gap:25px;margin:28px 0 25px}.index-filters button{font-size:10px}.index-row{grid-template-columns:22px 1fr 12px;gap:12px;padding:18px 0}.index-row>span:nth-child(3){display:none}.index-row>span:nth-child(2){font-size:27px}.index-row>span:first-child{font-size:8px}.index-row>span:last-child{font-size:12px}}
 @media(max-width:700px){.opening h1 em{font-size:.8em;white-space:nowrap;display:inline-block}.interface-index h3 br{display:block}}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> parent of dc289bb (Unify portfolio disciplines and add Mirrored Realms film)
@@ -44,6 +48,8 @@ dialog{padding:0;border:0;color:var(--ink);background:var(--paper)}dialog::backd
 >>>>>>> parent of dc289bb (Unify portfolio disciplines and add Mirrored Realms film)
 =======
 >>>>>>> parent of dc289bb (Unify portfolio disciplines and add Mirrored Realms film)
+=======
+>>>>>>> parent of 2e3b721 (Rebuild portfolio layout around strongest work)
 =======
 >>>>>>> parent of 2e3b721 (Rebuild portfolio layout around strongest work)
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important}.visual-link:hover img{transform:none}}body.motion-paused *,body.motion-paused *:before,body.motion-paused *:after{animation-play-state:paused!important}.motion-paused .visual-link:hover img{transform:none}
