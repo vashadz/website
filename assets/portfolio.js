@@ -61,7 +61,12 @@
   function mediaMarkup(m){
     const alt=m.caption||activeProject.title;
 <<<<<<< HEAD
+<<<<<<< HEAD
     const visual=m.kind==='video'?`<video controls playsinline preload="metadata" poster="${esc(m.poster)}" aria-label="${esc(alt)}"><source src="${esc(m.src)}" type="video/mp4">Your browser does not support this video. <a href="${esc(m.src)}">Open the film</a>.</video>`:`<a href="${esc(m.src)}" target="_blank" rel="noopener" aria-label="Open full-size image: ${esc(alt)}"><img src="${esc(m.src)}" alt="${esc(alt)}" loading="lazy" decoding="async"></a>`;
+=======
+    const dimensions=m.width&&m.height?`width="${m.width}" height="${m.height}"`:'';
+    const visual=m.kind==='video'?`<video controls playsinline preload="metadata" poster="${esc(m.poster)}" aria-label="${esc(alt)}"><source src="${esc(m.src)}" type="video/mp4">Your browser does not support this video. <a href="${esc(m.src)}">Open the film</a>.</video>`:`<a href="${esc(m.src)}" target="_blank" rel="noopener" aria-label="Open full-size image: ${esc(alt)}"><img ${dimensions} src="${esc(m.src)}" alt="${esc(alt)}" loading="lazy" decoding="async"></a>`;
+>>>>>>> parent of dc289bb (Unify portfolio disciplines and add Mirrored Realms film)
 =======
     const dimensions=m.width&&m.height?`width="${m.width}" height="${m.height}"`:'';
     const visual=m.kind==='video'?`<video controls playsinline preload="metadata" poster="${esc(m.poster)}" aria-label="${esc(alt)}"><source src="${esc(m.src)}" type="video/mp4">Your browser does not support this video. <a href="${esc(m.src)}">Open the film</a>.</video>`:`<a href="${esc(m.src)}" target="_blank" rel="noopener" aria-label="Open full-size image: ${esc(alt)}"><img ${dimensions} src="${esc(m.src)}" alt="${esc(alt)}" loading="lazy" decoding="async"></a>`;
