@@ -84,8 +84,8 @@
     if(previousFocus?.isConnected)previousFocus.focus({preventScroll:true});
   }
   function closeProject(){
-    if(history.state?.projectModal){history.back();}
-    else{const u=new URL(location.href);u.searchParams.delete('project');history.replaceState(null,'',u);finishClose();}
+    const u=new URL(location.href);u.searchParams.delete('project');
+    history.replaceState(null,'',u);finishClose();
   }
   reader.addEventListener('cancel',event=>{event.preventDefault();closeProject();});
   document.addEventListener('click',event=>{
