@@ -133,26 +133,55 @@
   }
 
   const categoryResults=document.querySelector('#category-results');
-  const categoryLabels={film:'Film & Motion',spatial:'Spatial & 3D',graphic:'Graphic & Editorial',digital:'Digital & Interactive'};
+  const categoryLabels={all:'All projects',film:'Film & Motion',spatial:'Spatial & 3D',graphic:'Graphic & Editorial',digital:'Digital & Interactive'};
+  const priority=['david-mallett','mirrored-realms','iconem','khaite','fair-warning','memories','roblox','clock','ori','biltcard','oliverwyman','p5-studies','ms2art','exa','posters','data-posters','f_labyrinth','hw','wingmate','glucosegoddess','mexican'];
+  const catalogue=[...projects,{id:'p5-studies',title:'p5.js Studies',type:'Creative coding / 8 studies',category:'digital',cover:'clock-08',sketchbook:true,media:[]}].sort((a,b)=>(priority.includes(a.id)?priority.indexOf(a.id):99)-(priority.includes(b.id)?priority.indexOf(b.id):99));
+  let catalogueLayout=new URL(location.href).searchParams.get('view')==='images'?'images':'grid';
+  let masonryFrame;
+  function layoutCatalogue(){
+    if(!categoryResults)return;
+    cancelAnimationFrame(masonryFrame);
+    masonryFrame=requestAnimationFrame(()=>{
+      const cards=[...categoryResults.children];
+      cards.forEach(c=>{c.style.width='';c.style.left='';c.style.top='';});
+      categoryResults.style.height='';
+      if(catalogueLayout!=='images')return;
+      const columns=innerWidth<=600?1:innerWidth<=1000?2:3;
+      const gap=innerWidth<=600?28:32;
+      const width=(categoryResults.clientWidth-gap*(columns-1))/columns;
+      const heights=Array(columns).fill(0);
+      cards.forEach(card=>{const column=heights.indexOf(Math.min(...heights));card.style.width=width+'px';card.style.left=(column*(width+gap))+'px';card.style.top=heights[column]+'px';heights[column]+=card.offsetHeight+gap;});
+      categoryResults.style.height=Math.max(...heights)+'px';
+    });
+  }
+  function selectLayout(layout,update=true){
+    if(!categoryResults)return;
+    catalogueLayout=layout==='images'?'images':'grid';categoryResults.dataset.layout=catalogueLayout;
+    document.querySelectorAll('[data-layout]').forEach(b=>{if(b.tagName==='BUTTON')b.setAttribute('aria-pressed',String(b.dataset.layout===catalogueLayout));});
+    layoutCatalogue();
+    if(update){const u=new URL(location.href);if(catalogueLayout==='grid')u.searchParams.delete('view');else u.searchParams.set('view','images');history.replaceState(history.state,'',u);}
+  }
   function selectCategory(category,update=true){
     if(!categoryResults)return;
-    if(category!=='selected'&&!categoryLabels[category])category='selected';
-    const selected=category==='selected';
+    if(!categoryLabels[category])category='all';
     document.querySelectorAll('[data-category]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.category===category)));
-    document.querySelectorAll('.folio-selection,.further-work,.notebook-invitation').forEach(el=>el.hidden=!selected);
-    categoryResults.hidden=selected;
-    const filtered=projects.filter(p=>p.category===category);
-    categoryResults.innerHTML=selected?'':filtered.map((p,i)=>{
-      const cover=p.media.find(m=>m.kind==='image')?.src||p.media.find(m=>m.kind==='video')?.poster;
-      return `<figure class="category-project"><a class="visual-link" href="index.html?project=${esc(p.id)}" data-project="${esc(p.id)}" aria-label="Explore ${esc(p.title)}">${cover?`<img src="${esc(cover)}" alt="${esc(p.title)}" loading="lazy">`:''}</a><figcaption><span class="caption-no">${String(i+1).padStart(2,'0')}</span><div><a href="index.html?project=${esc(p.id)}" data-project="${esc(p.id)}">${esc(p.title)} ↗</a><p>${esc(p.type)}</p></div></figcaption></figure>`;
+    const filtered=catalogue.filter(p=>category==='all'||p.category===category);
+    categoryResults.setAttribute('aria-label',categoryLabels[category]+': '+filtered.length+' projects');
+    categoryResults.innerHTML=filtered.map((p)=>{
+      const cover=p.cover?'assets/editorial/'+p.cover+'.jpg':p.media.find(m=>m.kind==='image')?.src||p.media.find(m=>m.kind==='video')?.poster;
+      const url=p.sketchbook?'notebook.html#sketches':'index.html?project='+encodeURIComponent(p.id);
+      const action=p.sketchbook?'':`data-project="${esc(p.id)}"`;
+      return `<figure class="category-project"><a class="visual-link" href="${url}" ${action} aria-label="Explore ${esc(p.title)}"><img src="${esc(cover)}" alt="${esc(p.title)}" loading="lazy" decoding="async"></a><figcaption><span class="caption-no">${String(catalogue.indexOf(p)+1).padStart(2,'0')}</span><div><a href="${url}" ${action}>${esc(p.title)} <span aria-hidden="true">↗</span></a><p>${esc(p.type)}</p></div></figcaption></figure>`;
     }).join('');
-    if(category==='digital')categoryResults.insertAdjacentHTML('beforeend','<a class="sketch-category-link" href="notebook.html#sketches"><span>p5.js Studies</span><span>8 interactive sketches ↗</span></a>');
-    document.querySelector('#category-count').textContent=selected?'10 selected projects':`${categoryLabels[category]} / ${filtered.length+(category==='digital'?1:0)} projects`;
-    if(update){const u=new URL(location.href);if(selected)u.searchParams.delete('category');else u.searchParams.set('category',category);history.replaceState(history.state,'',u);}
-    ambient.forEach(reconcileVideo);
+    categoryResults.querySelectorAll('img').forEach(img=>img.addEventListener('load',layoutCatalogue));
+    selectLayout(catalogueLayout,false);
+    if(update){const u=new URL(location.href);if(category==='all')u.searchParams.delete('category');else u.searchParams.set('category',category);history.replaceState(history.state,'',u);}
   }
   document.querySelectorAll('[data-category]').forEach(b=>b.addEventListener('click',()=>selectCategory(b.dataset.category)));
-  selectCategory(new URL(location.href).searchParams.get('category')||'selected',false);
+  document.querySelectorAll('button[data-layout]').forEach(b=>b.addEventListener('click',()=>selectLayout(b.dataset.layout)));
+  window.addEventListener('resize',layoutCatalogue);
+  document.fonts?.ready.then(layoutCatalogue);
+  selectCategory(new URL(location.href).searchParams.get('category')||'all',false);
 
   const params=new URL(location.href).searchParams;
   if(params.get('profile')==='design-engineer'){location.replace('notebook.html');return;}
