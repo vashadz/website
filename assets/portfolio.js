@@ -68,7 +68,7 @@
   function openProject(id,push=true){
     id=aliases[id]||id;
     const p=byId.get(id);if(!p)return false;
-    if(p.group!==page){location.href=groupURL(p)+'?project='+encodeURIComponent(id);return true;}
+    
     activeProject=p;previousFocus=document.activeElement;
     if(index.open)index.close();
     content.innerHTML=`<div class="reader-intro"><p class="eyebrow">${esc(p.type)}</p><h2 id="reader-title">${esc(p.title)}</h2><div class="reader-copy"><div><p class="description">${esc(p.description)}</p>${p.note?`<p class="reader-note">${esc(p.note)}</p>`:''}${p.link?`<a class="text-link" href="${esc(p.link.url)}" target="_blank" rel="noopener">${esc(p.link.label)} ↗</a>`:''}</div><div class="reader-facts">${p.facts.map(f=>`<p>${esc(f)}</p>`).join('')}</div></div></div><div class="reader-gallery">${p.media.map(mediaMarkup).join('')}</div><div class="reader-end"><p>Stay a little longer.</p><button data-close-reader>Back to ${page==='notebook'?'the notebook':'selected work'} ↗</button></div>`;
@@ -131,6 +131,29 @@
   if(document.querySelector('#clock-time')){
     const updateTime=()=>document.querySelector('#clock-time').textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'})+' / Your local time';updateTime();setInterval(updateTime,1000);
   }
+
+  const categoryResults=document.querySelector('#category-results');
+  const categoryLabels={film:'Film & Motion',spatial:'Spatial & 3D',graphic:'Graphic & Editorial',digital:'Digital & Interactive'};
+  function selectCategory(category,update=true){
+    if(!categoryResults)return;
+    if(category!=='selected'&&!categoryLabels[category])category='selected';
+    const selected=category==='selected';
+    document.querySelectorAll('[data-category]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.category===category)));
+    document.querySelectorAll('.folio-selection,.further-work,.notebook-invitation').forEach(el=>el.hidden=!selected);
+    categoryResults.hidden=selected;
+    const filtered=projects.filter(p=>p.category===category);
+    categoryResults.innerHTML=selected?'':filtered.map((p,i)=>{
+      const cover=p.media.find(m=>m.kind==='image')?.src||p.media.find(m=>m.kind==='video')?.poster;
+      return `<figure class="category-project"><a class="visual-link" href="index.html?project=${esc(p.id)}" data-project="${esc(p.id)}" aria-label="Explore ${esc(p.title)}">${cover?`<img src="${esc(cover)}" alt="${esc(p.title)}" loading="lazy">`:''}</a><figcaption><span class="caption-no">${String(i+1).padStart(2,'0')}</span><div><a href="index.html?project=${esc(p.id)}" data-project="${esc(p.id)}">${esc(p.title)} ↗</a><p>${esc(p.type)}</p></div></figcaption></figure>`;
+    }).join('');
+    if(category==='digital')categoryResults.insertAdjacentHTML('beforeend','<a class="sketch-category-link" href="notebook.html#sketches"><span>p5.js Studies</span><span>8 interactive sketches ↗</span></a>');
+    document.querySelector('#category-count').textContent=selected?'10 selected projects':`${categoryLabels[category]} / ${filtered.length+(category==='digital'?1:0)} projects`;
+    if(update){const u=new URL(location.href);if(selected)u.searchParams.delete('category');else u.searchParams.set('category',category);history.replaceState(history.state,'',u);}
+    ambient.forEach(reconcileVideo);
+  }
+  document.querySelectorAll('[data-category]').forEach(b=>b.addEventListener('click',()=>selectCategory(b.dataset.category)));
+  selectCategory(new URL(location.href).searchParams.get('category')||'selected',false);
+
   const params=new URL(location.href).searchParams;
   if(params.get('profile')==='design-engineer'){location.replace('notebook.html');return;}
   if(params.get('project'))openProject(params.get('project'),false);
