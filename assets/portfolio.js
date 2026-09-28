@@ -99,7 +99,7 @@
   document.querySelectorAll('[data-open-index]').forEach(button=>button.addEventListener('click',()=>{index.showModal();lock();ambient.forEach(reconcileVideo);}));
   const shortcut=document.createElement('button');shortcut.className='index-shortcut';shortcut.textContent='Index ＋';shortcut.hidden=true;shortcut.setAttribute('aria-label','Open project index');document.body.append(shortcut);
   shortcut.addEventListener('click',()=>{index.showModal();lock();ambient.forEach(reconcileVideo);});
-  const updateShortcut=()=>shortcut.hidden=window.scrollY<750;
+  const updateShortcut=()=>shortcut.hidden=window.scrollY<750||document.querySelector('.site-footer').getBoundingClientRect().top<innerHeight;
   window.addEventListener('scroll',updateShortcut,{passive:true});updateShortcut();
   document.querySelector('[data-close-index]').addEventListener('click',()=>index.close());
   index.addEventListener('close',()=>{lock();ambient.forEach(reconcileVideo);});
