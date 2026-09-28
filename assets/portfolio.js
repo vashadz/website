@@ -8,7 +8,7 @@
   const index=document.querySelector('#work-index');
   const content=document.querySelector('#reader-content');
   const baseTitle=document.title;
-  const aliases={'data_posters':'data-posters','bilt':'biltcard','saint-martin':'iconem','clock':'clock','masterworks-clock':'clock','oliver-wyman':'oliverwyman','david-mallet':'david-mallett'};
+  const aliases={'f_thesis':'mirrored-realms','data_posters':'data-posters','bilt':'biltcard','saint-martin':'iconem','clock':'clock','masterworks-clock':'clock','oliver-wyman':'oliverwyman','david-mallet':'david-mallett'};
   const esc=s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
   const groupURL=p=>p.group==='notebook'?'notebook.html':'index.html';
   let activeProject=null;
@@ -60,25 +60,9 @@
 
   function mediaMarkup(m){
     const alt=m.caption||activeProject.title;
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    const visual=m.kind==='video'?`<video controls playsinline preload="metadata" poster="${esc(m.poster)}" aria-label="${esc(alt)}"><source src="${esc(m.src)}" type="video/mp4">Your browser does not support this video. <a href="${esc(m.src)}">Open the film</a>.</video>`:`<a href="${esc(m.src)}" target="_blank" rel="noopener" aria-label="Open full-size image: ${esc(alt)}"><img src="${esc(m.src)}" alt="${esc(alt)}" loading="lazy" decoding="async"></a>`;
-=======
     const dimensions=m.width&&m.height?`width="${m.width}" height="${m.height}"`:'';
+    if(m.kind==='vimeo')return `<figure class="reader-media cinema"><div class="vimeo-stage"><iframe src="https://player.vimeo.com/video/${esc(m.id)}?dnt=1&amp;title=0&amp;byline=0&amp;portrait=0" title="${esc(activeProject.title)}: complete film" width="${m.width}" height="${m.height}" style="aspect-ratio:${m.width}/${m.height}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div><figcaption>${esc(m.caption||'')} · <a href="https://vimeo.com/${esc(m.id)}" target="_blank" rel="noopener">Open on Vimeo ↗</a></figcaption></figure>`;
     const visual=m.kind==='video'?`<video controls playsinline preload="metadata" poster="${esc(m.poster)}" aria-label="${esc(alt)}"><source src="${esc(m.src)}" type="video/mp4">Your browser does not support this video. <a href="${esc(m.src)}">Open the film</a>.</video>`:`<a href="${esc(m.src)}" target="_blank" rel="noopener" aria-label="Open full-size image: ${esc(alt)}"><img ${dimensions} src="${esc(m.src)}" alt="${esc(alt)}" loading="lazy" decoding="async"></a>`;
->>>>>>> parent of dc289bb (Unify portfolio disciplines and add Mirrored Realms film)
-=======
-    const dimensions=m.width&&m.height?`width="${m.width}" height="${m.height}"`:'';
-    const visual=m.kind==='video'?`<video controls playsinline preload="metadata" poster="${esc(m.poster)}" aria-label="${esc(alt)}"><source src="${esc(m.src)}" type="video/mp4">Your browser does not support this video. <a href="${esc(m.src)}">Open the film</a>.</video>`:`<a href="${esc(m.src)}" target="_blank" rel="noopener" aria-label="Open full-size image: ${esc(alt)}"><img ${dimensions} src="${esc(m.src)}" alt="${esc(alt)}" loading="lazy" decoding="async"></a>`;
->>>>>>> parent of dc289bb (Unify portfolio disciplines and add Mirrored Realms film)
-=======
-    const visual=m.kind==='video'?`<video controls playsinline preload="metadata" poster="${esc(m.poster)}" aria-label="${esc(alt)}"><source src="${esc(m.src)}" type="video/mp4">Your browser does not support this video. <a href="${esc(m.src)}">Open the film</a>.</video>`:`<a href="${esc(m.src)}" target="_blank" rel="noopener" aria-label="Open full-size image: ${esc(alt)}"><img src="${esc(m.src)}" alt="${esc(alt)}" loading="lazy" decoding="async"></a>`;
->>>>>>> parent of 2e3b721 (Rebuild portfolio layout around strongest work)
-=======
-    const visual=m.kind==='video'?`<video controls playsinline preload="metadata" poster="${esc(m.poster)}" aria-label="${esc(alt)}"><source src="${esc(m.src)}" type="video/mp4">Your browser does not support this video. <a href="${esc(m.src)}">Open the film</a>.</video>`:`<a href="${esc(m.src)}" target="_blank" rel="noopener" aria-label="Open full-size image: ${esc(alt)}"><img src="${esc(m.src)}" alt="${esc(alt)}" loading="lazy" decoding="async"></a>`;
->>>>>>> parent of 2e3b721 (Rebuild portfolio layout around strongest work)
     return `<figure class="reader-media ${esc(m.layout||'')}">${visual}${m.caption?`<figcaption>${esc(m.caption)}</figcaption>`:''}</figure>`;
   }
   function openProject(id,push=true){
