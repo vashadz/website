@@ -136,7 +136,8 @@
   const categoryLabels={all:'All projects',film:'Film & Motion',spatial:'Spatial & 3D',graphic:'Graphic & Editorial',digital:'Digital & Interactive'};
   const priority=['david-mallett','mirrored-realms','iconem','khaite','fair-warning','memories','roblox','clock','ori','biltcard','oliverwyman','p5-studies','ms2art','exa','posters','data-posters','f_labyrinth','hw','wingmate','glucosegoddess','mexican'];
   const catalogue=[...projects,{id:'p5-studies',title:'p5.js Studies',type:'Creative coding / 8 studies',category:'digital',cover:'clock-08',sketchbook:true,media:[]}].sort((a,b)=>(priority.includes(a.id)?priority.indexOf(a.id):99)-(priority.includes(b.id)?priority.indexOf(b.id):99));
-  let catalogueLayout=new URL(location.href).searchParams.get('view')==='images'?'images':'grid';
+  const requestedLayout=new URL(location.href).searchParams.get('view');
+  let catalogueLayout=['grid','list'].includes(requestedLayout)?requestedLayout:'images';
   let masonryFrame;
   function layoutCatalogue(){
     if(!categoryResults)return;
@@ -156,10 +157,10 @@
   }
   function selectLayout(layout,update=true){
     if(!categoryResults)return;
-    catalogueLayout=layout==='images'?'images':'grid';categoryResults.dataset.layout=catalogueLayout;
+    catalogueLayout=['images','grid','list'].includes(layout)?layout:'images';categoryResults.dataset.layout=catalogueLayout;
     document.querySelectorAll('[data-layout]').forEach(b=>{if(b.tagName==='BUTTON')b.setAttribute('aria-pressed',String(b.dataset.layout===catalogueLayout));});
     layoutCatalogue();
-    if(update){const u=new URL(location.href);if(catalogueLayout==='grid')u.searchParams.delete('view');else u.searchParams.set('view','images');history.replaceState(history.state,'',u);}
+    if(update){const u=new URL(location.href);if(catalogueLayout==='images')u.searchParams.delete('view');else u.searchParams.set('view',catalogueLayout);history.replaceState(history.state,'',u);}
   }
   function selectCategory(category,update=true){
     if(!categoryResults)return;
